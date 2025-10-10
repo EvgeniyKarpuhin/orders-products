@@ -1,37 +1,73 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { useProductsStore } from "./products";
 
 export const useOrdersStore = defineStore('orders', () => {
+    const productsStore = useProductsStore();
     const orders = ref([
         {
             id: 1,
             title: 'Order 1',
             date: '2017-06-29 12:09:33',
             description: 'desc',
-            get products () { return products }
+            // get products () { return products }
         },
         {
             id: 2,
             title: 'Order 2',
             date: '2017-06-29 12:09:33',
             description: 'desc',
-            get products () { return products }
+            // get products () { return products }
         },
         {
             id: 3,
             title: 'Order 3',
             date: '2017-06-29 12:09:33',
             description: 'desc',
-            get products () { return products },
+            // get products () { return products },
         }
-    ])
+    ]);
 
-    const totalOrders = computed(() => orders.value.length)
+    const ordersWithProducts = computed(() => {
+    return orders.value.map(order => {
+      const relatedProducts = productsStore.products.filter(
+        p => p.order === order.id
+      );
 
-    const addOrder = (order) => orders.value.push(order)
-    const removeOrder = (id) => {
-        orders.value = orders.value.filter(o => o.id !== id)
-    }
+      const totalUSD = relatedProducts.reduce((sum, p) => {
+        const usd = p.price.find(pr => pr.symbol === 'USD');
+        return sum + (usd?.value || 0);
+      }, 0);
 
-    return { orders, totalOrders, addOrder, removeOrder }
+      const totalUAH = relatedProducts.reduce((sum, p) => {
+        const uah = p.price.find(pr => pr.symbol === 'UAH');
+        return sum + (uah?.value || 0);
+      }, 0);
+
+      return {
+        ...order,
+        products: relatedProducts,
+        totalUSD,
+        totalUAH
+      };
+    });
+  });
+
+  const totalOrders = computed(() => orders.value.length);
+
+  const addOrder = (order) => orders.value.push(order);
+  const removeOrder = (id) => {
+    orders.value = orders.value.filter(o => o.id !== id);
+  };
+
+  return { orders, ordersWithProducts, totalOrders, addOrder, removeOrder };
+
+    // const totalOrders = computed(() => orders.value.length)
+
+    // const addOrder = (order) => orders.value.push(order)
+    // const removeOrder = (id) => {
+    //     orders.value = orders.value.filter(o => o.id !== id)
+    // }
+
+    // return { orders, totalOrders, addOrder, removeOrder }
 })
