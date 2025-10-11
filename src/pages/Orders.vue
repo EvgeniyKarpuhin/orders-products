@@ -61,7 +61,7 @@ const ordersStore = useOrdersStore()
               </div>
             </div>
 
-            <button class="btn btn-sm btn-outline-danger ms-2" @click.stop="confirmDelete(order)">
+            <button class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
               🗑
             </button>
           </button>
@@ -77,20 +77,20 @@ const ordersStore = useOrdersStore()
           mode="out-in"
         >
           <div v-if="selectedOrder" key="details" class="card">
-            <div class="card-body">
-              <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <div class="d-flex justify-content-between align-items-start m-3">
                 <div>
-                  <h4 class="card-title mb-1">{{ selectedOrder.title }}</h4>
-                  <div class="text-muted small">{{ formatDateLong(selectedOrder.date) }}</div>
+                  <h4 class="card-title">{{ selectedOrder.title }}</h4>
+                  <!-- <div class="text-muted small">{{ formatDateLong(selectedOrder.date) }}</div> -->
                 </div>
-                <button class="btn btn-light btn-sm" @click="closeDetails">✕</button>
+                <!-- <button class="btn btn-light btn-sm" @click="closeDetails">✕</button> -->
               </div>
 
               <div class="mb-3">
-                <button class="btn btn-success btn-sm" @click="addProductToOrder">+ Добавить продукт</button>
+                <button class="btn btn-success btn-sm" @click="addProductToOrder"><spam>+</spam> Добавить продукт</button>
               </div>
 
-              <ul class="list-group">
+              <ul class="list-group rounded-0">
                 <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center">
                   <img v-if="p.photo" :src="p.photo" alt=""
                     style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px" />
@@ -104,14 +104,14 @@ const ordersStore = useOrdersStore()
                     <!-- <div class="fw-bold">{{ getDefaultPrice(p).value }} {{ getDefaultPrice(p).symbol }}</div>
                     <div class="text-muted small">{{ formatDateShort(p.date) }}</div> -->
                   </div>
-                  <button class="btn btn-sm btn-outline-danger" @click.stop="removeProductFromOrder(p.id)">🗑</button>
+                  <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">🗑</button>
                 </li>
               </ul>
 
-              <div class="mt-3 d-flex justify-content-between align-items-center">
+              <!-- <div class="mt-3 d-flex justify-content-between align-items-center">
                 <div class="text-muted small">Сумма заказа</div>
                 <div class="fw-bold">{{ selectedOrder.totalUSD }} $ · {{ selectedOrder.totalUAH }} UAH</div>
-              </div>
+              </div> -->
             </div>
           </div>
 
