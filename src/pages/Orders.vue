@@ -94,7 +94,7 @@ const ordersStore = useOrdersStore()
                 <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center">
                   <img v-if="p.photo" :src="p.photo" alt=""
                     style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px" />
-                  <div class="flex-grow-1">
+                  <div class="flex-grow-1 text-start">
                     <div class="fw-semibold">{{ p.title }}</div>
                     <span class="text-muted small">SN: {{ p.serialNumber || '-' }}</span>
                     
