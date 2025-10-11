@@ -5,7 +5,17 @@ const currentTime = ref('')
 
 function updateTime() {
     const now = new Date()
-    currentTime.value = now.toLocaleString()
+    const date = now.toLocaleString('ru-RU', {
+      weekday: 'long',
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+    const time = now.toLocaleTimeString('ru-RU', {
+      hour: '2-digit',
+      minute: '2-digit'
+    })
+    currentTime.value = `${date} - ${time}`
 }
 
 let interval
@@ -22,7 +32,11 @@ onUnmounted(() => clearInterval(interval))
     <header class="top-menu animate__animated animate__fadeInDown">
     <div class="top-menu__content">
       <div class="top-menu__title">Панель управления</div>
-      <div class="top-menu__time">{{ currentTime }}</div>
+      <div class="top-menu__info">
+        <span class="top-menu__time">{{ currentTime }}</span>
+        <span class="top-menu__sessions">{{ activeSessions }} активных сессий</span>
+      </div>
+      
     </div>
   </header>
 </template>
@@ -46,8 +60,21 @@ onUnmounted(() => clearInterval(interval))
   font-weight: 500;
 }
 
+.top-menu__info {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
 .top-menu__time {
   font-family: monospace;
   font-size: 0.9rem;
+}
+
+.top-menu__sessions {
+  font-size: 0.9rem;
+  background-color: #28a745;
+  padding: 0.2rem 0.6rem;
+  border-radius: 4px;
 }
 </style>

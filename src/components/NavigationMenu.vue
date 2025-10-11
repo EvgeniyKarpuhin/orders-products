@@ -21,6 +21,10 @@
   transition: color 0.3s;
 }
 
+.router-link-active {
+  font-weight: bold;
+}
+
 .router-link-active::after {
   content: "";
   position: absolute;
