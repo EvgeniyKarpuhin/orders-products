@@ -35,12 +35,14 @@ export const useOrdersStore = defineStore('orders', () => {
       );
 
       const totalUSD = relatedProducts.reduce((sum, p) => {
-        const usd = p.price.find(pr => pr.symbol === 'USD');
+        const prices = Array.isArray(p.price) ? p.price : []
+        const usd = prices.find(pr => pr.symbol === 'USD');
         return sum + (usd?.value || 0);
       }, 0);
 
       const totalUAH = relatedProducts.reduce((sum, p) => {
-        const uah = p.price.find(pr => pr.symbol === 'UAH');
+        const prices = Array.isArray(p.price) ? p.price : []
+        const uah = prices.find(pr => pr.symbol === 'UAH');
         return sum + (uah?.value || 0);
       }, 0);
 
@@ -58,6 +60,7 @@ export const useOrdersStore = defineStore('orders', () => {
   const addOrder = (order) => orders.value.push(order);
   const removeOrder = (id) => {
     orders.value = orders.value.filter(o => o.id !== id);
+    productsStore.products = productsStore.products.filter(p => p.order !==id);
   };
 
   return { orders, ordersWithProducts, totalOrders, addOrder, removeOrder };

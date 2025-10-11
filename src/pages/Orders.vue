@@ -24,13 +24,17 @@ const ordersStore = useOrdersStore()
 
 <template>
   <div class="orders-page container-fluid">
-    <div class="row">
-      <!-- Левый столбец -->
-      <aside class="col-md-4 orders-list p-3">
-        <div class="d-flex align-items-center mb-3">
+    <div class="d-flex align-items-center">
           <h3 class="me-3">Заказы</h3>
           <span class="text-muted">/{{ totalOrders }}</span>
         </div>
+    <div class="row">
+      <!-- Левый столбец -->
+      <aside class="col-md-4 orders-list p-3">
+        <!-- <div class="d-flex align-items-center">
+          <h3 class="me-3">Заказы</h3>
+          <span class="text-muted">/{{ totalOrders }}</span>
+        </div> -->
 
         <div v-if="ordersWithProducts.length === 0" class="text-muted">
           Заказаов пока нет
@@ -92,11 +96,13 @@ const ordersStore = useOrdersStore()
                     style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px" />
                   <div class="flex-grow-1">
                     <div class="fw-semibold">{{ p.title }}</div>
-                    <div class="text-muted small">SN: {{ p.serialNumber || '-' }}</div>
+                    <span class="text-muted small">SN: {{ p.serialNumber || '-' }}</span>
+                    
                   </div>
                   <div class="text-end me-3">
-                    <div class="fw-bold">{{ getDefaultPrice(p).value }} {{ getDefaultPrice(p).symbol }}</div>
-                    <div class="text-muted small">{{ formatDateShort(p.date) }}</div>
+                    <span class="text-success">{{ p.status }}</span>
+                    <!-- <div class="fw-bold">{{ getDefaultPrice(p).value }} {{ getDefaultPrice(p).symbol }}</div>
+                    <div class="text-muted small">{{ formatDateShort(p.date) }}</div> -->
                   </div>
                   <button class="btn btn-sm btn-outline-danger" @click.stop="removeProductFromOrder(p.id)">🗑</button>
                 </li>
@@ -152,7 +158,7 @@ const ordersStore = useOrdersStore()
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useOrdersStore } from '../store/orders'
 import { useProductsStore } from '../store/products'
@@ -161,13 +167,16 @@ const ordersStore = useOrdersStore()
 const productsStore = useProductsStore()
 const { ordersWithProducts, totalOrders } = storeToRefs(ordersStore)
 
-const selectedOrder = ref(null)
+const selectedOrderId = ref(null)
 const showDeleteModal = ref(false)
 const deletedOrder = ref(null)
 const previewProduct = ref(null)
 
+const selectedOrder = computed(() => 
+ordersWithProducts.value.find(o => o.id === selectedOrderId.value))
+
 function selectOrder(order) {
-  selectedOrder.value = order
+  selectedOrderId.value = order.id
 }
 function closeDetails() {
   selectedOrder.value = null
@@ -191,7 +200,23 @@ function deleteOrder() {
   }
 }
 function addProductToOrder() {
-  alert('Добавление продукта (реализуй форму)')
+  if(!selectedOrder.value) return;
+  const newProduct = {
+    id: Date.now(),
+    title: 'Новый продукт',
+    photo: 'pathToFile.jpg',
+    serialNumber: 1234,
+    specification: 'Specification 1',
+    status: 'Свободен',
+    price: [
+      {value: Math.floor(Math.random() * 100), symbol: 'USD', isDefault: true},
+      {value: Math.floor(Math.random() * 3000), symbol: 'UAH', isDefault: false},
+    ],
+    order: selectedOrder.value.id,
+    date: new Date().toISOString()
+  }
+  // ordersStore.addProductToOrder(selectedOrder.value.id, newProduct)
+  productsStore.addProduct(newProduct)
 }
 function removeProductFromOrder(productId) {
   productsStore.removeProduct(productId)
