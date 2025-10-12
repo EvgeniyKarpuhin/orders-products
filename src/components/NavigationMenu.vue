@@ -10,14 +10,15 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #ddd;
+  background-color: #ffffff;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.5);
+  border: 1px solid #ddd;
 }
 
 .nav-link {
     position: relative;
   text-decoration: none;
-  color: #333;
+  /* color: #333; */
   transition: color 0.3s;
 }
 

@@ -8,7 +8,7 @@ export const useOrdersStore = defineStore('orders', () => {
         {
             id: 1,
             title: 'Рандомное название прихода',
-            date: '2017-06-29 12:09:33',
+            date: '2017-12-29 12:09:33',
             description: 'desc',
             // get products () { return products }
         },

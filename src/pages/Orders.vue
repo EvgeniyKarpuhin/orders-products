@@ -45,22 +45,32 @@ const ordersStore = useOrdersStore()
           <button
             v-for="order in ordersWithProducts"
             :key="order.id"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-3 border rounded"
             :class="{ active: selectedOrder && selectedOrder.id === order.id }"
             @click="selectOrder(order)"
           >
             <div>
-              <div class="fw-semibold">{{ order.title }}</div>
-              <small class="text-muted">{{ formatDateShort(order.date) }}</small>
+              <u class="fw-bold">{{ order.title }}</u>
+              <!-- <small class="text-muted">{{ formatDateShort(order.date) }}</small> -->
             </div>
 
             <div class="text-end">
-              <div class="fw-bold">{{ order.products?.length || 0 }}</div>
+              <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
               <small class="text-muted">Продукта</small>
-              <div class="mt-1 text-nowrap text-secondary text-nowrap">
+              <!-- <div class="mt-1 text-nowrap text-secondary text-nowrap">
                 {{ order.totalUSD }} $ • {{ order.totalUAH }} UAH
-              </div>
+              </div> -->
             </div>
+
+            <div>
+              <small class="text-muted">{{ formatDateShort(order.date) }}</small>
+            </div>
+
+            <div class="text-nowrap text-secondary d-grid text-start">
+              <span>{{ order.totalUSD }} $</span>
+              <span>{{ order.totalUAH }} UAH</span>
+                 
+              </div>
 
             <button class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
               🗑
@@ -229,8 +239,16 @@ function getDefaultPrice(p) {
 }
 function formatDateShort(d) {
   try {
-    return new Date(d).toLocaleDateString()
-  } catch { return d }
+    const date = new Date(d)
+    const day = date.toLocaleString('ru-RU', { day: '2-digit'})
+    let month = date.toLocaleString('ru-RU', { month: 'short'})
+    month = month.replace('.', '')
+    month = month.charAt(0).toUpperCase() + month.slice(1)
+    const year = date.getFullYear()
+    return `${day} / ${month} / ${year}`
+  } catch { 
+    return d 
+  }
 }
 function formatDateLong(d) {
   try {
@@ -240,7 +258,7 @@ function formatDateLong(d) {
 </script>
 
 <style scoped>
-.orders-page { padding: 20px 8px; }
+.orders-page { padding: 3rem; }
 .orders-list .list-group-item { cursor: pointer; display: flex; gap: 12px; align-items: center; }
 .order-title { font-weight: 600; }
 .order-details .placeholder-block { background:#f8f9fb; border-radius:8px; padding:40px; }

@@ -16,7 +16,6 @@ function updateTime() {
       hour: '2-digit',
       minute: '2-digit'
     })
-    // currentTime.value = `${date} - ${time}`
 }
 
 let interval
