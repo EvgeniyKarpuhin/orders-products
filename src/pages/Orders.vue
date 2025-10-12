@@ -122,7 +122,9 @@ const ordersStore = useOrdersStore()
                     <!-- <div class="fw-bold">{{ getDefaultPrice(p).value }} {{ getDefaultPrice(p).symbol }}</div>
                     <div class="text-muted small">{{ formatDateShort(p.date) }}</div> -->
                   </div>
-                  <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">🗑</button>
+                  <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">
+                    <i class="bi bi-trash"></i>
+                  </button>
                 </li>
               </ul>
 
@@ -147,26 +149,25 @@ const ordersStore = useOrdersStore()
       leave-active-class="animate__animated animate__zoomOut animate__faster"
     >
       <div v-if="showDeleteModal" class="modal-overlay">
-        <div class="delete-modal card shadow-lg">
-          <div class="card-body">
-            <div class="d-flex justify-content-between align-items-start">
-              <h5>Вы уверены, что хотите удалить этот заказ?</h5>
+        <div class="delete-modal card shadow-lg border-0">
+          <div>
+            <div class="d-flex justify-content-between align-items-start p-4">
+              <h5>Вы уверены, что хотите удалить этот приход?</h5>
               <button class="btn btn-light btn-sm" @click="closeDeleteModal">✕</button>
             </div>
 
-            <div class="mt-3 d-flex gap-3">
+            <div class="d-flex gap-3 p-4 border-top">
               <img v-if="previewProduct?.photo" :src="previewProduct.photo" alt=""
                 style="width:64px;height:64px;object-fit:cover;border-radius:6px" />
-              <div>
+              <div class="text-start ">
                 <div class="fw-semibold">{{ previewProduct?.title || deletedOrder?.title }}</div>
-                <div class="text-muted small">{{ previewProduct?.specification }}</div>
                 <div class="text-muted small">SN: {{ previewProduct?.serialNumber || '—' }}</div>
               </div>
             </div>
 
-            <div class="mt-4 d-flex justify-content-end gap-2">
-              <button class="btn btn-outline-secondary" @click="closeDeleteModal">Отменить</button>
-              <button class="btn btn-danger" @click="deleteOrder">Удалить</button>
+            <div class="d-flex justify-content-end gap-2 p-4" style="background: #0fb304;">
+              <button class="bg-transparent text-white" @click="closeDeleteModal">Отменить</button>
+              <button class="btn text-danger bg-light px-4 rounded-5" @click="deleteOrder"><i class="bi bi-trash me-2"></i>Удалить</button>
             </div>
           </div>
         </div>
