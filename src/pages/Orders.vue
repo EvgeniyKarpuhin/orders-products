@@ -87,7 +87,8 @@ const ordersStore = useOrdersStore()
       </aside>
 
       <!-- Правая панель с анимацией -->
-      <main class="col-md-8 order-details p-3">
+      <main class="transition-width order-details p-3"
+      :class="selectedOrder ? 'col-md-8' : 'col-0 p-0 overflow-hidden'">
         <transition
           name="slide-fade"
           enter-active-class="animate__animated animate__slideInRight"
@@ -295,44 +296,5 @@ function formatDateLong(d) {
 }
 .delete-modal { width:720px; border-radius:8px; overflow:hidden; }
 
-.circle-lines {
-  width: 28px;
-  height: 28px;
-  border: 2px solid #cfd3d7;
-  border-radius: 50%;
-  position: relative;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-}
 
-.circle-lines::before,
-.circle-lines::after,
-.circle-lines span {
-  content: "";
-  position: absolute;
-  left: 8px;
-  width: 12px;
-  height: 2px;
-  background-color: #cfd3d7;
-  border-radius: 2px;
-}
-
-/* Три линии */
-.circle-lines::before {
-  top: 8px;
-}
-.circle-lines span {
-  top: 13px;
-}
-.circle-lines::after {
-  top: 18px;
-}
-
-/* Точки слева от линий */
-.circle-lines::before,
-.circle-lines span,
-.circle-lines::after {
-  box-shadow: -5px 0 0 0 #cfd3d7;
-}
 </style>
