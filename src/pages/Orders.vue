@@ -57,9 +57,6 @@ const ordersStore = useOrdersStore()
             <div class="text-end">
               <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
               <small class="text-muted">Продукта</small>
-              <!-- <div class="mt-1 text-nowrap text-secondary text-nowrap">
-                {{ order.totalUSD }} $ • {{ order.totalUAH }} UAH
-              </div> -->
             </div>
 
             <div>
@@ -67,7 +64,7 @@ const ordersStore = useOrdersStore()
             </div>
 
             <div class="text-nowrap text-secondary d-grid text-start">
-              <span>{{ order.totalUSD }} $</span>
+              <small class="fs-small">{{ order.totalUSD }} $</small>
               <span>{{ order.totalUAH }} UAH</span>
                  
               </div>
