@@ -1,6 +1,6 @@
 <template>
     <nav class="navigation animate__animated animate__fadeInLeft">
-        <router-link to="/orders" class="nav-link">Приходы</router-link>
+        <router-link to="/orders" class="nav-link">Приход</router-link>
         <router-link to="/products" class="nav-link">Продукты</router-link>
     </nav>
 </template>
