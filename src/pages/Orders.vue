@@ -25,9 +25,10 @@ const ordersStore = useOrdersStore()
 <template>
   <div class="orders-page container-fluid">
     <div class="d-flex align-items-center">
-          <h3 class="me-3">Приходы</h3>
-          <span class="text-muted">/{{ totalOrders }}</span>
-        </div>
+      <button class="btn me-3 rounded-5 border border-4 border-success d-flex justify-content-center align-items-center text-white" style="background: #0fb304; width: 35px; height: 35px;" @click="addNewOrder">+</button>
+      <h3 class="me-3">Приходы</h3>
+      <span class="text-muted">/{{ totalOrders }}</span>
+    </div>
     <div class="row position-relative">
       <!-- Левый столбец -->
       <aside class="orders-list p-3 transition-width"
@@ -182,6 +183,16 @@ const previewProduct = ref(null)
 
 const selectedOrder = computed(() => 
 ordersWithProducts.value.find(o => o.id === selectedOrderId.value))
+
+function addNewOrder() {
+  const newOrder = {
+    id: Date.now(),
+    title: 'Рандомное название прихода',
+    date: new Date().toISOString(),
+    description: 'Новый приход'
+  }
+  ordersStore.addOrder(newOrder)
+}
 
 function selectOrder(order) {
   selectedOrderId.value = order.id
