@@ -60,7 +60,7 @@ const ordersStore = useOrdersStore()
 
             <div class="text-start d-flex align-items-center">
               <div>
-                <i class="bi bi-list-ul me-3 text-secondary" style="font-size: x-large;border: 1px solid;border-radius: 50%;width: 40px;display: flex;height: 40px;justify-content: center;align-items: center;" ></i>
+                <i class="bi bi-list-ul me-3 text-secondary" style="font-size: x-large;border: 1px solid;border-radius: 50%;width: 40px;display: flex;height: 40px;justify-content: center;align-items: center;"></i>
               </div>
               <div>
                 <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
@@ -80,7 +80,7 @@ const ordersStore = useOrdersStore()
               </div>
 
             <button class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
-              🗑
+              <i class="bi bi-trash"></i>
             </button>
           </button>
         </div>
