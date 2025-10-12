@@ -29,7 +29,7 @@ const ordersStore = useOrdersStore()
       <h3 class="me-3">Приходы</h3>
       <span class="text-muted">/{{ totalOrders }}</span>
     </div>
-    <div class="row position-relative">
+    <div class="row position-relative overflow-hidden">
       <!-- Левый столбец -->
       <aside class="orders-list p-3 transition-width"
         :class="selectedOrder ? 'col-md-4' : 'col-12'">
@@ -87,14 +87,15 @@ const ordersStore = useOrdersStore()
       </aside>
 
       <!-- Правая панель с анимацией -->
-      <main class="transition-width order-details p-3"
+       <transition name="slide-right">
+        <main v-if="selectedOrder" class="position-absolute top-0 end-0 h-100 bg-white shadow-lg p-3"
       :class="selectedOrder ? 'col-md-8' : 'col-0 p-0 overflow-hidden'">
-        <transition
+        <!-- <transition
           name="slide-fade"
           enter-active-class="animate__animated animate__slideInRight"
           leave-active-class="animate__animated animate__slideOutRight"
           mode="out-in"
-        >
+        > -->
           <div v-if="selectedOrder" key="details" class="card">
             <div>
               <div class="d-flex justify-content-between align-items-start m-3">
@@ -140,8 +141,10 @@ const ordersStore = useOrdersStore()
           <!-- <div v-else key="placeholder" class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
             Выберите заказ слева, чтобы увидеть детали
           </div> -->
-        </transition>
+        <!-- </transition> -->
       </main>
+       </transition>
+      
     </div>
 
     <!-- Модалка с анимацией -->
@@ -296,5 +299,28 @@ function formatDateLong(d) {
 }
 .delete-modal { width:720px; border-radius:8px; overflow:hidden; }
 
+.slide-right-enter-active,
+.slide-right-leave-active {
+  transition: all 0.4s ease;
+}
 
+.slide-right-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.slide-right-enter-to {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-right-leave-from {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+.slide-right-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
 </style>
