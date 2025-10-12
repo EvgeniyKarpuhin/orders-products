@@ -1,6 +1,6 @@
 <template>
     <nav class="navigation animate__animated animate__fadeInLeft">
-        <router-link to="/orders" class="nav-link">Заказы</router-link>
+        <router-link to="/orders" class="nav-link">Приходы</router-link>
         <router-link to="/products" class="nav-link">Продукты</router-link>
     </nav>
 </template>
@@ -31,7 +31,7 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: 40%;
+  width: 50%;
   height: 3px;
   background-color: #57dd4e;
   border-radius: 2px;

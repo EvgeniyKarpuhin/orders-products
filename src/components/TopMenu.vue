@@ -1,21 +1,22 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
 
+const currentDate = ref('')
 const currentTime = ref('')
 
 function updateTime() {
     const now = new Date()
-    const date = now.toLocaleString('ru-RU', {
+    currentDate.value = now.toLocaleString('ru-RU', {
       weekday: 'long',
       day: '2-digit',
       month: 'short',
       year: 'numeric'
     })
-    const time = now.toLocaleTimeString('ru-RU', {
+    currentTime.value = now.toLocaleTimeString('ru-RU', {
       hour: '2-digit',
       minute: '2-digit'
     })
-    currentTime.value = `${date} - ${time}`
+    // currentTime.value = `${date} - ${time}`
 }
 
 let interval
@@ -31,8 +32,9 @@ onUnmounted(() => clearInterval(interval))
 <template>
     <header class="top-menu animate__animated animate__fadeInDown">
     <div class="top-menu__content">
-      <div class="top-menu__title">Панель управления</div>
+      <div class="top-menu__title">Название компании</div>
       <div class="top-menu__info">
+        <span class="top-menu__time">{{ currentDate }}</span>
         <span class="top-menu__time">{{ currentTime }}</span>
         <span class="top-menu__sessions">{{ activeSessions }} активных сессий</span>
       </div>
@@ -46,7 +48,7 @@ onUnmounted(() => clearInterval(interval))
   background-color: #343a40;
   color: #fff;
   padding: 0.8rem 1.5rem;
-  border-bottom: 3px solid #007bff;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.5);
 }
 
 .top-menu__content {

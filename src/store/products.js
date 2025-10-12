@@ -7,8 +7,8 @@ export const useProductsStore = defineStore('products', () => {
             id: 1,
             serialNumber: 1234,
             isNew: 1,
-            photo: 'pathToFile.jpg',
-            title: 'Product 1',
+            photo: '/images/samsung.png',
+            title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
             type: 'Monitors',
             specification: 'Specification 1',
             guarantee: {
@@ -26,8 +26,8 @@ export const useProductsStore = defineStore('products', () => {
             id: 2,
             serialNumber: 1234,
             isNew: 1,
-            photo: 'pathToFile.jpg',
-            title: 'Product 1',
+            photo: '/images/samsung.png',
+            title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
             type: 'Monitors',
             specification: 'Specification 1',
             guarantee: {

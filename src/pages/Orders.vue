@@ -25,19 +25,20 @@ const ordersStore = useOrdersStore()
 <template>
   <div class="orders-page container-fluid">
     <div class="d-flex align-items-center">
-          <h3 class="me-3">Заказы</h3>
+          <h3 class="me-3">Приходы</h3>
           <span class="text-muted">/{{ totalOrders }}</span>
         </div>
-    <div class="row">
+    <div class="row position-relative">
       <!-- Левый столбец -->
-      <aside class="col-md-4 orders-list p-3">
+      <aside class="orders-list p-3 transition-width"
+        :class="selectedOrder ? 'col-md-4' : 'col-12'">
         <!-- <div class="d-flex align-items-center">
-          <h3 class="me-3">Заказы</h3>
+          <h3 class="me-3">Приходы</h3>
           <span class="text-muted">/{{ totalOrders }}</span>
         </div> -->
 
         <div v-if="ordersWithProducts.length === 0" class="text-muted">
-          Заказаов пока нет
+          Приходов нет
         </div>
 
         <div class="list-group">
@@ -49,14 +50,14 @@ const ordersStore = useOrdersStore()
             @click="selectOrder(order)"
           >
             <div>
-              <div class="order-title">{{ order.title }}</div>
+              <div class="fw-semibold">{{ order.title }}</div>
               <small class="text-muted">{{ formatDateShort(order.date) }}</small>
             </div>
 
             <div class="text-end">
               <div class="fw-bold">{{ order.products?.length || 0 }}</div>
               <small class="text-muted">Продукта</small>
-              <div class="mt-1 text-nowrap text-secondary small">
+              <div class="mt-1 text-nowrap text-secondary text-nowrap">
                 {{ order.totalUSD }} $ • {{ order.totalUAH }} UAH
               </div>
             </div>
@@ -83,16 +84,16 @@ const ordersStore = useOrdersStore()
                   <h4 class="card-title">{{ selectedOrder.title }}</h4>
                   <!-- <div class="text-muted small">{{ formatDateLong(selectedOrder.date) }}</div> -->
                 </div>
-                <!-- <button class="btn btn-light btn-sm" @click="closeDetails">✕</button> -->
+                <button class="btn btn-light btn-sm" @click="closeDetails">✕</button>
               </div>
 
-              <div class="mb-3">
-                <button class="btn btn-success btn-sm" @click="addProductToOrder"><spam>+</spam> Добавить продукт</button>
+              <div class="mb-3 text-start">
+                <button class="btn btn-sm m-l-3 d-flex text-success" @click="addProductToOrder"><span class="rounded-5 bg-success me-2" style="color: white; width: 20px;">+</span> Добавить продукт</button>
               </div>
 
               <ul class="list-group rounded-0">
                 <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center">
-                  <img v-if="p.photo" :src="p.photo" alt=""
+                  <img v-if="p.photo" :src="p.photo" alt="Монитор"
                     style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px" />
                   <div class="flex-grow-1 text-start">
                     <div class="fw-semibold">{{ p.title }}</div>
@@ -179,7 +180,7 @@ function selectOrder(order) {
   selectedOrderId.value = order.id
 }
 function closeDetails() {
-  selectedOrder.value = null
+  selectedOrderId.value = null
 }
 function confirmDelete(order) {
   deletedOrder.value = order
@@ -203,8 +204,8 @@ function addProductToOrder() {
   if(!selectedOrder.value) return;
   const newProduct = {
     id: Date.now(),
-    title: 'Новый продукт',
-    photo: 'pathToFile.jpg',
+    title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
+    photo: '/images/samsung.png',
     serialNumber: 1234,
     specification: 'Specification 1',
     status: 'Свободен',
