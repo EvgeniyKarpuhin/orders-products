@@ -54,9 +54,9 @@ const ordersStore = useOrdersStore()
               <!-- <small class="text-muted">{{ formatDateShort(order.date) }}</small> -->
             </div>
 
-            <div class="text-end">
+            <div class="text-start">
               <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
-              <small class="text-muted">Продукта</small>
+              <small class="text-muted">{{ productEndWord(order.products?.length) || 0 }}</small>
             </div>
 
             <div>
@@ -124,9 +124,9 @@ const ordersStore = useOrdersStore()
           </div>
 
           <!-- Если ничего не выбрано -->
-          <div v-else key="placeholder" class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
+          <!-- <div v-else key="placeholder" class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
             Выберите заказ слева, чтобы увидеть детали
-          </div>
+          </div> -->
         </transition>
       </main>
     </div>
@@ -233,6 +233,14 @@ function getDefaultPrice(p) {
   if (!p?.price) return { value: 0, symbol: '' }
   const def = p.price.find(pr => pr.isDefault) || p.price[0]
   return def || { value: 0, symbol: '' }
+}
+function productEndWord(count) {
+  const last10 = count % 10
+  const last100 = count % 100
+
+  if(last10 === 1 && last100 !== 11) return 'Продукт'
+  if(last10 >=2 && last10 <=4 && (last100 < 10 || last100 >= 20)) return 'Продукта'
+  return 'Продуктов'
 }
 function formatDateShort(d) {
   try {
