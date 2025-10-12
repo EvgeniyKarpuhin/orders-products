@@ -55,9 +55,18 @@ const ordersStore = useOrdersStore()
               <!-- <small class="text-muted">{{ formatDateShort(order.date) }}</small> -->
             </div>
 
-            <div class="text-start">
-              <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
+            <!-- <div class="circle-lines me-3"></div> -->
+             <!-- <i class="bi bi-list-ul me-2 text-secondary" style="font-size: 20px;"></i> -->
+
+            <div class="text-start d-flex align-items-center">
+              <div>
+                <i class="bi bi-list-ul me-3 text-secondary" style="font-size: x-large;border: 1px solid;border-radius: 50%;width: 40px;display: flex;height: 40px;justify-content: center;align-items: center;" ></i>
+              </div>
+              <div>
+                <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
               <small class="text-muted">{{ productEndWord(order.products?.length) || 0 }}</small>
+              </div>
+              
             </div>
 
             <div>
@@ -284,4 +293,45 @@ function formatDateLong(d) {
   background:rgba(0,0,0,0.45); z-index:3000;
 }
 .delete-modal { width:720px; border-radius:8px; overflow:hidden; }
+
+.circle-lines {
+  width: 28px;
+  height: 28px;
+  border: 2px solid #cfd3d7;
+  border-radius: 50%;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle-lines::before,
+.circle-lines::after,
+.circle-lines span {
+  content: "";
+  position: absolute;
+  left: 8px;
+  width: 12px;
+  height: 2px;
+  background-color: #cfd3d7;
+  border-radius: 2px;
+}
+
+/* Три линии */
+.circle-lines::before {
+  top: 8px;
+}
+.circle-lines span {
+  top: 13px;
+}
+.circle-lines::after {
+  top: 18px;
+}
+
+/* Точки слева от линий */
+.circle-lines::before,
+.circle-lines span,
+.circle-lines::after {
+  box-shadow: -5px 0 0 0 #cfd3d7;
+}
 </style>
