@@ -5,9 +5,9 @@
       <h3 class="me-3">Приходы</h3>
       <span class="text-muted">/{{ totalOrders }}</span>
     </div>
-    <div class="position-relative overflow-hidden" style="height: 80vh;">
+    <div class="position-relative" style="height: 80vh;">
       <!-- Левый столбец -->
-      <aside class="orders-list transition-width"
+      <aside class="list-group transition-width"
         :class="{ 'col-md-4': selectedOrder, 'col-12': !selectedOrder }">
 
         <div v-if="ordersWithProducts.length === 0" class="text-muted">
@@ -15,10 +15,11 @@
         </div>
 
         <div class="list-group">
-          <button
+          <div
+            role="button"
             v-for="order in ordersWithProducts"
             :key="order.id"
-            class="list-group-item d-flex justify-content-between align-items-center mb-3 border rounded"
+            class="list-group-item d-flex justify-content-between align-items-center mb-3 border rounded btnHov"
             
             @click="selectOrder(order)"
           >
@@ -53,7 +54,7 @@
             <button v-if="!selectedOrder" class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
               <i class="bi bi-trash"></i>
             </button>
-          </button>
+          </div>
         </div>
       </aside>
 
@@ -62,7 +63,7 @@
         <main v-if="selectedOrder" 
               :key="selectedOrder.id"
               class="order-details position-absolute top-0 end-0 h-100 bg-white px-3">
-          <div v-if="selectedOrder" key="details" class="card mh-80 overflow-y-auto" style="max-height: 80vh;">
+          <div v-if="selectedOrder" key="details" class="card mh-80" style="max-height: 80vh;">
             <div>
               <div class="p-2">
                 <div class="d-flex justify-content-between align-items-start m-3">
@@ -79,7 +80,7 @@
               
 
               <ul class="list-group rounded-0">
-                <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center">
+                <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center btnHov">
                   <img v-if="p.photo" :src="p.photo" alt="Монитор"
                     style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px" />
                   <div class="flex-grow-1 text-start">
@@ -249,6 +250,7 @@ function formatDateLong(d) {
 <style scoped>
 .orders-page { padding: 0 3rem; }
 .orders-list { max-height: 80vh; overflow-y: auto; overflow-x: hidden; }
+.btnHov:hover { box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.5); z-index: 1 }
 .orders-list .list-group-item { cursor: pointer; display: flex; gap: 12px; align-items: center; }
 .order-title { font-weight: 600; }
 .order-details {
