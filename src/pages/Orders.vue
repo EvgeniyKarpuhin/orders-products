@@ -2,8 +2,8 @@
   <div class="orders-page container-fluid">
     <div class="d-flex align-items-center py-5">
       <button class="btn me-3 rounded-5 border border-4 border-success d-flex justify-content-center align-items-center text-white" style="background: #0fb304; width: 35px; height: 35px;" @click="addNewOrder">+</button>
-      <h3 class="me-3">Приходы</h3>
-      <span class="text-muted">/{{ totalOrders }}</span>
+      <h3 class="me-2">Приходы</h3>
+      <h3><spam class="me-2">/</spam>{{ totalOrders }}</h3>
     </div>
     <div class="position-relative" style="height: 80vh;">
       <!-- Левый столбец -->
