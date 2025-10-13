@@ -1,42 +1,14 @@
-<!-- <script setup>
-import { useOrdersStore } from '../store/orders';
-
-const ordersStore = useOrdersStore()
-</script>
-
-<template>
-    <div>
-        <h1>Всего заказов: {{ ordersStore.totalOrders }}</h1>
-        <ul>
-            <li v-for="order in ordersStore.orders" :key="order.id">
-                {{ order.title }} {{ order.products.length }} Продукта
-                <button @click="ordersStore.removeOrder(order.id)">Удалить</button>
-            </li>
-            <li v-for="order in ordersStore.ordersWithProducts" :key="order.id">
-  <strong>{{ order.title }}</strong> — 
-  {{ order.products?.length || 0 }} продукта, 
-  сумма: {{ order.totalUSD }} USD / {{ order.totalUAH }} UAH
-  <button @click="ordersStore.removeOrder(order.id)">Удалить</button>
-</li>
-        </ul>
-    </div>
-</template> -->
-
 <template>
   <div class="orders-page container-fluid">
-    <div class="d-flex align-items-center">
+    <div class="d-flex align-items-center py-5">
       <button class="btn me-3 rounded-5 border border-4 border-success d-flex justify-content-center align-items-center text-white" style="background: #0fb304; width: 35px; height: 35px;" @click="addNewOrder">+</button>
       <h3 class="me-3">Приходы</h3>
       <span class="text-muted">/{{ totalOrders }}</span>
     </div>
-    <div class="row position-relative overflow-hidden">
+    <div class="position-relative overflow-hidden" style="height: 80vh;">
       <!-- Левый столбец -->
-      <aside class="orders-list p-3 transition-width"
-        :class="selectedOrder ? 'col-md-4' : 'col-12'">
-        <!-- <div class="d-flex align-items-center">
-          <h3 class="me-3">Приходы</h3>
-          <span class="text-muted">/{{ totalOrders }}</span>
-        </div> -->
+      <aside class="orders-list transition-width"
+        :class="{ 'col-md-4': selectedOrder, 'col-12': !selectedOrder }">
 
         <div v-if="ordersWithProducts.length === 0" class="text-muted">
           Приходов нет
@@ -47,16 +19,14 @@ const ordersStore = useOrdersStore()
             v-for="order in ordersWithProducts"
             :key="order.id"
             class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-3 border rounded"
-            :class="{ active: selectedOrder && selectedOrder.id === order.id }"
+            :class="{
+              active: selectedOrder && selectedOrder.id === order.id
+            }"
             @click="selectOrder(order)"
           >
-            <div>
+            <div v-if="!selectedOrder && !isClosing">
               <u class="fw-bold">{{ order.title }}</u>
-              <!-- <small class="text-muted">{{ formatDateShort(order.date) }}</small> -->
             </div>
-
-            <!-- <div class="circle-lines me-3"></div> -->
-             <!-- <i class="bi bi-list-ul me-2 text-secondary" style="font-size: 20px;"></i> -->
 
             <div class="text-start d-flex align-items-center">
               <div>
@@ -73,13 +43,13 @@ const ordersStore = useOrdersStore()
               <small class="text-muted">{{ formatDateShort(order.date) }}</small>
             </div>
 
-            <div class="text-nowrap text-secondary d-grid text-start">
+            <div v-if="!selectedOrder && !isClosing" class="text-nowrap text-secondary d-grid text-start">
               <small class="fs-small">{{ order.totalUSD }} $</small>
               <span>{{ order.totalUAH }} UAH</span>
                  
               </div>
 
-            <button class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
+            <button v-if="!selectedOrder && !isClosing" class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
               <i class="bi bi-trash"></i>
             </button>
           </button>
@@ -88,20 +58,15 @@ const ordersStore = useOrdersStore()
 
       <!-- Правая панель с анимацией -->
        <transition name="slide-right">
-        <main v-if="selectedOrder" class="position-absolute top-0 end-0 h-100 bg-white shadow-lg p-3"
-      :class="selectedOrder ? 'col-md-8' : 'col-0 p-0 overflow-hidden'">
-        <!-- <transition
-          name="slide-fade"
-          enter-active-class="animate__animated animate__slideInRight"
-          leave-active-class="animate__animated animate__slideOutRight"
-          mode="out-in"
-        > -->
-          <div v-if="selectedOrder" key="details" class="card">
+        <main v-if="selectedOrder" 
+              :key="selectedOrder.id"
+              class="order-details position-absolute top-0 end-0 h-100 bg-white px-3">
+          <div v-if="selectedOrder" key="details" class="card mh-80 overflow-y-auto" style="max-height: 80vh;">
             <div>
-              <div class="d-flex justify-content-between align-items-start m-3">
+              <div class="p-2">
+                <div class="d-flex justify-content-between align-items-start m-3">
                 <div>
                   <h4 class="card-title">{{ selectedOrder.title }}</h4>
-                  <!-- <div class="text-muted small">{{ formatDateLong(selectedOrder.date) }}</div> -->
                 </div>
                 <button class="btn btn-light btn-sm" @click="closeDetails">✕</button>
               </div>
@@ -109,6 +74,8 @@ const ordersStore = useOrdersStore()
               <div class="mb-3 text-start">
                 <button class="btn btn-sm m-l-3 d-flex text-success" @click="addProductToOrder"><span class="rounded-5 bg-success me-2" style="color: white; width: 20px;">+</span> Добавить продукт</button>
               </div>
+              </div>
+              
 
               <ul class="list-group rounded-0">
                 <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center">
@@ -121,19 +88,12 @@ const ordersStore = useOrdersStore()
                   </div>
                   <div class="text-end me-3">
                     <span class="text-success">{{ p.status }}</span>
-                    <!-- <div class="fw-bold">{{ getDefaultPrice(p).value }} {{ getDefaultPrice(p).symbol }}</div>
-                    <div class="text-muted small">{{ formatDateShort(p.date) }}</div> -->
                   </div>
                   <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">
                     <i class="bi bi-trash"></i>
                   </button>
                 </li>
               </ul>
-
-              <!-- <div class="mt-3 d-flex justify-content-between align-items-center">
-                <div class="text-muted small">Сумма заказа</div>
-                <div class="fw-bold">{{ selectedOrder.totalUSD }} $ · {{ selectedOrder.totalUAH }} UAH</div>
-              </div> -->
             </div>
           </div>
 
@@ -141,7 +101,6 @@ const ordersStore = useOrdersStore()
           <!-- <div v-else key="placeholder" class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
             Выберите заказ слева, чтобы увидеть детали
           </div> -->
-        <!-- </transition> -->
       </main>
        </transition>
       
@@ -248,7 +207,6 @@ function addProductToOrder() {
     order: selectedOrder.value.id,
     date: new Date().toISOString()
   }
-  // ordersStore.addProductToOrder(selectedOrder.value.id, newProduct)
   productsStore.addProduct(newProduct)
 }
 function removeProductFromOrder(productId) {
@@ -288,9 +246,16 @@ function formatDateLong(d) {
 </script>
 
 <style scoped>
-.orders-page { padding: 3rem; }
+.orders-page { padding: 0 3rem; }
+.orders-list { max-height: 80vh; overflow-y: auto; overflow-x: hidden; }
 .orders-list .list-group-item { cursor: pointer; display: flex; gap: 12px; align-items: center; }
 .order-title { font-weight: 600; }
+.order-details {
+  width: 66.666%; /* ширина как col-md-8 */
+  z-index: 10;
+  transition: transform 0.7s ease, opacity 0.4s ease;
+  /* width: 66.666%; */
+}
 .order-details .placeholder-block { background:#f8f9fb; border-radius:8px; padding:40px; }
 
 .modal-overlay {
@@ -301,7 +266,7 @@ function formatDateLong(d) {
 
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.7s ease;
 }
 
 .slide-right-enter-from {
@@ -323,4 +288,17 @@ function formatDateLong(d) {
   transform: translateX(100%);
   opacity: 0;
 }
+
+.transition-width {
+  transition: width 0.7s ease;
+}
+
+/* .fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+} */
 </style>

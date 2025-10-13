@@ -38,7 +38,7 @@ import NavigationMenu from './components/NavigationMenu.vue';
 .content-wrapper {
   display: flex;
   flex: 1;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 /* Навигация слева */
