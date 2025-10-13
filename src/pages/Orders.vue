@@ -18,15 +18,16 @@
           <button
             v-for="order in ordersWithProducts"
             :key="order.id"
-            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-3 border rounded"
-            :class="{
-              active: selectedOrder && selectedOrder.id === order.id
-            }"
+            class="list-group-item d-flex justify-content-between align-items-center mb-3 border rounded"
+            
             @click="selectOrder(order)"
           >
-            <div v-if="!selectedOrder && !isClosing">
-              <u class="fw-bold">{{ order.title }}</u>
-            </div>
+          <transition name="fade" mode="out-in">
+            <!-- <div v-show="!selectedOrder"> -->
+              <u v-show="!selectedOrder" class="fw-bold">{{ order.title }}</u>
+            <!-- </div> -->
+          </transition>
+            
 
             <div class="text-start d-flex align-items-center">
               <div>
@@ -43,13 +44,13 @@
               <small class="text-muted">{{ formatDateShort(order.date) }}</small>
             </div>
 
-            <div v-if="!selectedOrder && !isClosing" class="text-nowrap text-secondary d-grid text-start">
+            <div v-if="!selectedOrder" class="text-nowrap text-secondary d-grid text-start">
               <small class="fs-small">{{ order.totalUSD }} $</small>
               <span>{{ order.totalUAH }} UAH</span>
                  
               </div>
 
-            <button v-if="!selectedOrder && !isClosing" class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
+            <button v-if="!selectedOrder" class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
               <i class="bi bi-trash"></i>
             </button>
           </button>
@@ -266,7 +267,7 @@ function formatDateLong(d) {
 
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: all 0.7s ease;
+  transition: all 0.5s ease;
 }
 
 .slide-right-enter-from {
@@ -290,15 +291,22 @@ function formatDateLong(d) {
 }
 
 .transition-width {
-  transition: width 0.7s ease;
+  transition: width 0.9s ease;
 }
 
-/* .fade-enter-active,
+.fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.9s ease;
+  display: none;
 }
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
-} */
+}
+
+.fade-enter-to,
+.fade-leave-from {
+  transform: translateX(100px);
+  opacity: 1;
+}
 </style>

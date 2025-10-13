@@ -15,7 +15,18 @@
           :class="{ active: selectedOrder && selectedOrder.id === order.id }"
           @click="selectOrder(order)"
         >
-          <u class="fw-bold">{{ order.title }}</u>
+        <transition name="fade" mode="out-in">
+          <u v-show="!selectedOrder" class="fw-bold">{{ order.title }}</u>
+        </transition>
+          
+
+          <div>
+            <p>ghfghgffgjhhfjhf</p>
+          </div>
+
+          <div v-show="!selectedOrder">
+            <p>ghfghgffgjhhfjhf</p>
+          </div>
 
           <div class="text-start d-flex align-items-center">
             <i
@@ -73,7 +84,7 @@ import { ref } from 'vue'
 const orders = ref([
   {
     id: 1,
-    title: 'Приход 1',
+    title: 'Очень длинное название прихода',
     products: [
       { id: 1, title: 'Монитор', serialNumber: 'SN123', photo: '/images/samsung.png' },
       { id: 2, title: 'Клавиатура', serialNumber: 'SN456', photo: '/images/samsung.png' },
@@ -81,7 +92,7 @@ const orders = ref([
   },
   {
     id: 2,
-    title: 'Приход 2',
+    title: 'Ещё одно длинющее название прихода',
     products: [
       { id: 3, title: 'Мышка', serialNumber: 'SN789', photo: '/images/samsung.png' },
     ],
@@ -95,7 +106,10 @@ function selectOrder(order) {
 }
 
 function closeDetails() {
-  selectedOrder.value = null
+  // setTimeout(() => {
+    selectedOrder.value = null
+  // }, 400)
+  
 }
 
 function productEndWord(count) {
@@ -125,7 +139,7 @@ function productEndWord(count) {
 /* Анимация выезда справа */
 .slide-right-enter-active,
 .slide-right-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.7s ease;
 }
 
 .slide-right-enter-from {
@@ -145,6 +159,15 @@ function productEndWord(count) {
 
 .slide-right-leave-to {
   transform: translateX(100%);
+  opacity: 0;
+}
+
+.fade-enter-active, 
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+  display: none;
+}
+.fade-enter-from, .fade-leave-to {
   opacity: 0;
 }
 </style>
