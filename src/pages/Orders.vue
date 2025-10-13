@@ -70,7 +70,7 @@
                 <div>
                   <h4 class="card-title">{{ selectedOrder.title }}</h4>
                 </div>
-                <button class="btn btn-light btn-sm" @click="closeDetails">✕</button>
+                <button class="btn btn-light btn-sm btn-close-custom" @click="closeDetails">✕</button>
               </div>
 
               <div class="mb-3 text-start">
@@ -80,7 +80,8 @@
               
 
               <ul class="list-group rounded-0">
-                <li v-for="p in selectedOrder.products" :key="p.id" class="list-group-item d-flex align-items-center btnHov">
+                <li v-for="p in selectedOrder.products" :key="p.id" class="d-flex align-items-center gap-3 border-top border-bottom btnHov p-4">
+                  <i class="bi bi-circle-fill text-warning" style="font-size: 10px; margin-right: 10px;"></i>
                   <img v-if="p.photo" :src="p.photo" alt="Монитор"
                     style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px" />
                   <div class="flex-grow-1 text-start">
@@ -89,7 +90,7 @@
                     
                   </div>
                   <div class="text-end me-3">
-                    <span class="text-success">{{ p.status }}</span>
+                    <span class="text-warning">{{ p.status }}</span>
                   </div>
                   <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">
                     <i class="bi bi-trash"></i>
@@ -311,4 +312,37 @@ function formatDateLong(d) {
   transform: translateX(100px);
   opacity: 1;
 }
+
+.btn-close-custom {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  background-color: white;
+  border: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  color: gray;
+}
+
+/* .btn-close-custom:hover {
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+  transform: scale(1.05);
+}
+
+.btn-close-custom i {
+  font-size: 18px;
+  color: #888;
+  transition: color 0.3s ease;
+}
+
+.btn-close-custom:hover i {
+  color: #000;
+} */
 </style>
