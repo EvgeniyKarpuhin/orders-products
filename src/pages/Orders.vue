@@ -19,15 +19,17 @@
             role="button"
             v-for="order in ordersWithProducts"
             :key="order.id"
-            class="list-group-item d-flex justify-content-between align-items-center mb-3 border rounded btnHov"
+            class="d-flex justify-content-between align-items-stretch mb-3 border rounded btnHov"
             
             @click="selectOrder(order)"
           >
-          <transition name="fade" mode="out-in">
-            <!-- <div v-show="!selectedOrder"> -->
-              <u v-show="!selectedOrder" class="fw-bold">{{ order.title }}</u>
-            <!-- </div> -->
-          </transition>
+          <div class="flex-grow-1 d-flex justify-content-between align-items-center m-3">
+            <transition name="fade" mode="out-in">
+              <div v-show="!selectedOrder">
+                <u class="fw-bold">{{ order.title }}</u>
+              </div>
+              
+            </transition>
             
 
             <div class="text-start d-flex align-items-center">
@@ -38,7 +40,6 @@
                 <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
               <small class="text-muted">{{ productEndWord(order.products?.length) || 0 }}</small>
               </div>
-              
             </div>
 
             <div>
@@ -55,6 +56,12 @@
               <i class="bi bi-trash"></i>
             </button>
           </div>
+          <div v-if="selectedOrder?.id === order.id" class="arrow-wrapper d-flex align-items-center justify-content-center">
+            <i class="bi bi-chevron-right text-secondary fs-4"></i>
+          </div>
+          
+          </div>
+          
         </div>
       </aside>
 
@@ -101,9 +108,9 @@
           </div>
 
           <!-- Если ничего не выбрано -->
-          <!-- <div v-else key="placeholder" class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
+          <div v-else key="placeholder" class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
             Выберите заказ слева, чтобы увидеть детали
-          </div> -->
+          </div>
       </main>
        </transition>
       
@@ -294,7 +301,7 @@ function formatDateLong(d) {
 }
 
 .transition-width {
-  transition: width 0.9s ease;
+  transition: width 0.5s ease;
 }
 
 .fade-enter-active,
@@ -329,6 +336,12 @@ function formatDateLong(d) {
   cursor: pointer;
   transition: all 0.3s ease;
   color: gray;
+}
+
+.arrow-wrapper {
+  background-color: #f0f0f0;
+  padding: 0 12px;
+  transition: background-color 0.9s ease;
 }
 
 /* .btn-close-custom:hover {

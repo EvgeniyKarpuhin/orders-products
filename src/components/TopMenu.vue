@@ -14,10 +14,9 @@ function updateTime() {
     }
     let formatDate = now.toLocaleString('ru-RU', options)
     formatDate = formatDate
-    .replace('г', '')
-    .replace('.', '')
-    // .trim()
-    // formatDate = formatDate.replace(/\b\p{L}/gu, c => c.toUpperCase())
+    .replace(/\s?г\./, '')
+    .replace(/\./g, '')
+    .trim()
     currentDate.value = formatDate
     currentTime.value = now.toLocaleTimeString('ru-RU', {
       hour: '2-digit',
