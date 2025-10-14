@@ -6,12 +6,19 @@ const currentTime = ref('')
 
 function updateTime() {
     const now = new Date()
-    currentDate.value = now.toLocaleString('ru-RU', {
+    const options = {
       weekday: 'long',
       day: '2-digit',
       month: 'short',
       year: 'numeric'
-    })
+    }
+    let formatDate = now.toLocaleString('ru-RU', options)
+    formatDate = formatDate
+    .replace('г', '')
+    .replace('.', '')
+    // .trim()
+    // formatDate = formatDate.replace(/\b\p{L}/gu, c => c.toUpperCase())
+    currentDate.value = formatDate
     currentTime.value = now.toLocaleTimeString('ru-RU', {
       hour: '2-digit',
       minute: '2-digit'
@@ -34,6 +41,7 @@ onUnmounted(() => clearInterval(interval))
       <div class="top-menu__title">Название компании</div>
       <div class="top-menu__info">
         <span class="top-menu__time">{{ currentDate }}</span>
+        <i class="bi bi-clock top-menu__clock"></i>
         <span class="top-menu__time">{{ currentTime }}</span>
         <span class="top-menu__sessions">{{ activeSessions }} активных сессий</span>
       </div>
@@ -44,7 +52,7 @@ onUnmounted(() => clearInterval(interval))
 
 <style scoped>
 .top-menu {
-  background-color: #343a40;
+  /* background-color: #343a40; */
   color: #fff;
   padding: 0.8rem 1.5rem;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.5);
@@ -57,6 +65,7 @@ onUnmounted(() => clearInterval(interval))
 }
 
 .top-menu__title {
+  color: #28a745;
   font-size: 1.2rem;
   font-weight: 500;
 }
@@ -68,8 +77,13 @@ onUnmounted(() => clearInterval(interval))
 }
 
 .top-menu__time {
+  color: black;
   font-family: monospace;
   font-size: 0.9rem;
+}
+
+.top-menu__clock {
+  color: #28a745;
 }
 
 .top-menu__sessions {
