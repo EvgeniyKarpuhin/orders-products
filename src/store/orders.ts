@@ -5,26 +5,7 @@ import type { Order, Product } from "../types";
 
 export const useOrdersStore = defineStore('orders', () => {
     const productsStore = useProductsStore();
-    const orders = ref<Order[]>([
-        {
-            id: 1,
-            title: 'Рандомное название прихода',
-            date: '2017-12-29 12:09:33',
-            description: 'desc',
-        },
-        {
-            id: 2,
-            title: 'Рандомное название прихода',
-            date: '2017-06-29 12:09:33',
-            description: 'desc',
-        },
-        {
-            id: 3,
-            title: 'Рандомное название прихода',
-            date: '2017-06-29 12:09:33',
-            description: 'desc',
-        }
-    ]);
+    const orders = ref<Order[]>([]);
 
     const ordersWithProducts = computed<Order[]>(() => {
     return orders.value.map(order => {
@@ -60,7 +41,5 @@ export const useOrdersStore = defineStore('orders', () => {
     orders.value = orders.value.filter(o => o.id !== id);
     productsStore.products = productsStore.products.filter(p => p.order !==id);
   };
-
   return { orders, ordersWithProducts, totalOrders, addOrder, removeOrder };
-
 })

@@ -24,7 +24,7 @@ const productSpecification = computed<string[]>(() => {
 })
 
 const filteredProducts = computed<Product[]>(() => {
-  let result = products
+  let result = products.filter(p => p.order)
   if (selectedType.value !== 'Все') {
     result = result.filter(p => p.type === selectedType.value)
   }
@@ -80,12 +80,9 @@ function getPrice(product: Product, currency: 'USD' | 'UAH'): number {
           <option v-for="specification in productSpecification" :key="specification" :value="specification">{{ specification }}</option>
         </select>
       </div>
-      
     </header>
 
-    <div class="list-group w-100">
-      
-
+    <div class="list-group w-100 overflow-auto" style="max-height: 80vh;">
       <div
         v-for="product in filteredProducts"
         :key="product.id"
@@ -132,12 +129,6 @@ function getPrice(product: Product, currency: 'USD' | 'UAH'): number {
     </div>
   </div>
 </template>
-
-<style scoped>
-/* .products-wrapper {
-  padding: 1rem;
-} */
-</style>
 
 
 
