@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useOrdersStore } from '../store/orders'
 import { useProductsStore } from '../store/products'
@@ -18,6 +18,23 @@ const currentProductIndex = ref<number>(0)
 
 const selectedOrder = computed<Order | undefined>(() =>
   ordersWithProducts.value.find(o => o.id === selectedOrderId.value))
+
+onMounted(() => {
+  const savedId = localStorage.getItem('selectedOrderId')
+  if (savedId) {
+    const id = Number(savedId)
+    const order = ordersStore.orders.find(o => o.id === id)
+    if (order) selectedOrderId.value = id
+  }
+})
+
+watch(selectedOrder, (newOrder) => {
+  if (newOrder) {
+    localStorage.setItem('selectedOrderId', String(newOrder.id))
+  } else {
+    localStorage.removeItem('selectedOrderId')
+  }
+})
 
 function addNewOrder(): void {
   const newOrder: Order = {
@@ -65,18 +82,22 @@ function addProductToOrder(): void {
     { status: 'Свободен'},
     { status: 'В ремонте'}
   ];
+  if(currentProductIndex.value >= productStatus.length) {
+    currentProductIndex.value = 0;
+  }
   const template = productStatus[currentProductIndex.value]
   if(!template) {
     currentProductIndex.value = 0;
   }
+  const isUsed = template.status === 'В ремонте';
   const newProduct: Product = {
     id: Date.now(),
     serialNumber: 1234,
-    isNew: 1,
+    isNew: isUsed ? 0 : 1,
     photo: '/images/samsung.png',
     title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
     type: 'Monitors',
-    specification: 'Новый',
+    specification: isUsed ? 'Б/У' : 'Новый',
     status: template.status,
     guarantee: {
       start: new Date().toISOString(),

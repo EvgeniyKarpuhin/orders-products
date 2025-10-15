@@ -1,13 +1,19 @@
 <script setup lang="ts">
-import TopMenu from './components/TopMenu.vue';
-import NavigationMenu from './components/NavigationMenu.vue';
+import { defineAsyncComponent } from 'vue';
+
+const TopMenu = defineAsyncComponent(() =>
+import('./components/TopMenu.vue'))
+const NaviMenu = defineAsyncComponent(() =>
+import('./components/NavigationMenu.vue'))
+// import TopMenu from './components/TopMenu.vue';
+// import NavigationMenu from './components/NavigationMenu.vue';
 </script>
 
 <template>
   <div class="app-wrapper">
     <TopMenu />
     <div class="content-wrapper">
-      <NavigationMenu />
+      <NaviMenu />
       <router-view v-slot="{ Component }">
         <component :is="Component" />
       </router-view>
