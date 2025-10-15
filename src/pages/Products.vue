@@ -1,28 +1,29 @@
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { useProductsStore } from '../store/products' 
 import { useOrdersStore } from '../store/orders' 
 import { formatDateShort } from '../utils/date'
+import type { Order, Product } from '../types'
 
 const { products } = useProductsStore()
 const { orders } = useOrdersStore()
 
-const totalProducts = computed(() => products.length)
+const totalProducts = computed<number>(() => products.length)
 
-const selectedType = ref('Все')
-const selectedSpecification = ref('Все')
+const selectedType = ref<string>('Все')
+const selectedSpecification = ref<string>('Все')
 
-const productTypes = computed(() => {
+const productTypes = computed<string[]>(() => {
   const types = products.map(p => p.type)
   return ['Все', ...new Set(types)]
 })
 
-const productSpecification = computed(() => {
+const productSpecification = computed<string[]>(() => {
   const spec = products.map(p => p.specification)
   return ['Все', ...new Set(spec)]
 })
 
-const filteredProducts = computed(() => {
+const filteredProducts = computed<Product[]>(() => {
   let result = products
   if (selectedType.value !== 'Все') {
     result = result.filter(p => p.type === selectedType.value)
@@ -33,7 +34,7 @@ const filteredProducts = computed(() => {
   return result
 })
 
-function formatDate(dateStr, format = 'short') {
+function formatDate(dateStr: string, format: 'short' | 'full' = 'short'): string {
   const date = new Date(dateStr)
   if (format === 'short') {
     return date.toLocaleDateString('ru-RU')
@@ -47,9 +48,14 @@ function formatDate(dateStr, format = 'short') {
   }
 }
 
-function getOrderTitle(orderId) {
-  const order = orders.find(o => o.id === orderId)
+function getOrderTitle(orderId: number): string {
+  const order: Order | undefined = orders.find(o => o.id === orderId)
   return order?.title || 'Без названия'
+}
+
+function getPrice(product: Product, currency: 'USD' | 'UAH'): number {
+  const price = product.price.find(p => p.symbol === currency)
+  return price?.value || 0
 }
 </script>
 
@@ -78,12 +84,13 @@ function getOrderTitle(orderId) {
     </header>
 
     <div class="list-group w-100">
+      
+
       <div
         v-for="product in filteredProducts"
         :key="product.id"
         class="list-group-item d-flex align-items-center mb-3 border rounded gap-2 justify-content-between"
       >
-        <!-- Левая часть -->
           <i class="bi bi-circle-fill text-warning" style="font-size: 10px; margin-right: 10px;"
             :class="{
               'text-warning': product.status === 'Свободен',
@@ -112,19 +119,15 @@ function getOrderTitle(orderId) {
 
           <div>
             <div class="text-nowrap text-secondary d-grid text-start">
-              <small class="fs-small">{{ orders?.totalUSD || 0 }} $</small>
-              <span>{{ orders?.totalUAH || 0 }} UAH</span>
+              <small class="fs-small">{{ getPrice(product, 'USD') }} $</small>
+              <span>{{ getPrice(product, 'UAH') }} UAH</span>
             </div>
           </div>
-          <span>{{ getOrderTitle(product.order) }}</span>
+          <span>{{ product.order ? getOrderTitle(product.order) : 'Без названия' }}</span>
 
           <div>
             <small class="text-muted">{{ formatDateShort(product.date) }}</small>
           </div>
-
-          <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">
-            <i class="bi bi-trash"></i>
-          </button>
       </div>
     </div>
   </div>

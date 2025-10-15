@@ -1,16 +1,17 @@
-<script setup>
+<script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { io } from 'socket.io-client'
+import { io, Socket } from 'socket.io-client'
 
-const socket = io('http://localhost:3000', { transports: ['websocket'] })
 
-const activeSessions = ref(0)
-const currentDate = ref('')
-const currentTime = ref('')
+const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] })
 
-function updateTime() {
+const activeSessions = ref<number>(0)
+const currentDate = ref<string>('')
+const currentTime = ref<string>('')
+
+function updateTime(): void {
     const now = new Date()
-    const options = {
+    const options: Intl.DateTimeFormatOptions = {
       weekday: 'long',
       day: '2-digit',
       month: 'short',
@@ -28,12 +29,12 @@ function updateTime() {
     })
 }
 
-let interval
+let interval: ReturnType<typeof setInterval>
 onMounted(() => {
     updateTime()
     interval = setInterval(updateTime, 1000)
 
-    socket.on('activeSessions', count => {
+    socket.on('activeSessions', (count: number) => {
       activeSessions.value = count
     })
     socket.emit('join')

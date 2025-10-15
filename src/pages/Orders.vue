@@ -38,7 +38,7 @@
               </div>
               <div>
                 <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
-              <small class="text-muted">{{ productEndWord(order.products?.length) || 0 }}</small>
+              <small class="text-muted">{{ order.products?.length ? productEndWord(order.products?.length) : 'Нет продуктов' }}</small>
               </div>
             </div>
 
@@ -148,28 +148,29 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="ts">
 import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useOrdersStore } from '../store/orders'
 import { useProductsStore } from '../store/products'
 import { formatDateShort } from '../utils/date'
+import type { Order, Product } from '../types'
 
 const ordersStore = useOrdersStore()
 const productsStore = useProductsStore()
 const { ordersWithProducts, totalOrders } = storeToRefs(ordersStore)
 
-const selectedOrderId = ref(null)
-const showDeleteModal = ref(false)
-const deletedOrder = ref(null)
-const previewProduct = ref(null)
-const currentProductIndex = ref(0)
+const selectedOrderId = ref<number | null>(null)
+const showDeleteModal = ref<boolean>(false)
+const deletedOrder = ref<Order | null>(null)
+const previewProduct = ref<Product | null>(null)
+const currentProductIndex = ref<number>(0)
 
-const selectedOrder = computed(() => 
+const selectedOrder = computed<Order | undefined>(() => 
 ordersWithProducts.value.find(o => o.id === selectedOrderId.value))
 
-function addNewOrder() {
-  const newOrder = {
+function addNewOrder(): void {
+  const newOrder: Order = {
     id: Date.now(),
     title: 'Рандомное название прихода',
     date: new Date().toISOString(),
@@ -178,47 +179,45 @@ function addNewOrder() {
   ordersStore.addOrder(newOrder)
 }
 
-function selectOrder(order) {
+function selectOrder(order: Order): void {
   selectedOrderId.value = order.id
 }
-function closeDetails() {
+function closeDetails(): void {
   selectedOrderId.value = null
 }
-function confirmDelete(order) {
+function confirmDelete(order: Order): void {
   deletedOrder.value = order
   previewProduct.value = (order.products && order.products.length) ? order.products[0] : null
   showDeleteModal.value = true
 }
-function closeDeleteModal() {
+function closeDeleteModal(): void {
   showDeleteModal.value = false
   deletedOrder.value = null
   previewProduct.value = null
 }
-function deleteOrder() {
+function deleteOrder(): void {
   if (!deletedOrder.value) return
-
   const wasSelected = selectedOrder.value?.id === deletedOrder.value.id
-
   if (wasSelected) {
-    const remainingOrders = ordersStore.orders.filter(o => o.id !== deletedOrder.value.id)
-    selectedOrder.value = remainingOrders.length > 0 ? remainingOrders[0] : null
+    const remainingOrders = ordersStore.orders.filter((o: Order) => o.id !== deletedOrder.value!.id)
+    selectedOrderId.value = remainingOrders.length > 0 ? remainingOrders[0].id : null
   }
 
-  ordersStore.removeOrder(deletedOrder.value.id)
+  ordersStore.removeOrder(deletedOrder.value!.id)
   closeDeleteModal()
 
-  if (selectedOrder.value && selectedOrder.value.id === deletedOrder.value.id) {
-    selectedOrder.value = null
+  if (selectedOrder.value && selectedOrder.value.id === deletedOrder.value!.id) {
+    selectedOrderId.value = null
   }
 }
 
-function addProductToOrder(productId) {
+function addProductToOrder(productId: number): void {
   if(!selectedOrder.value) return;
 
   const product = productsStore.products.find(p => p.id === productId)
   if(!product) return;
 
-  const newProduct = {
+  const newProduct: Product = {
     ...product,
     id: Date.now(),
     order: selectedOrder.value.id,
@@ -227,7 +226,7 @@ function addProductToOrder(productId) {
   productsStore.addProduct(newProduct)
 }
 
-function addProductToOrderNext() {
+function addProductToOrderNext(): void {
   const newProduct = productsStore.products[currentProductIndex.value]
   if(newProduct) {
     addProductToOrder(newProduct.id)
@@ -235,14 +234,14 @@ function addProductToOrderNext() {
   }
 }
 
-function removeProductFromOrder(productId) {
+function removeProductFromOrder(productId: number): void {
   productsStore.removeProduct(productId)
   if(currentProductIndex.value >= productsStore.products.length) {
     currentProductIndex.value = 0
   }
 }
 
-function productEndWord(count) {
+function productEndWord(count: number): string {
   const last10 = count % 10
   const last100 = count % 100
 
@@ -250,19 +249,6 @@ function productEndWord(count) {
   if(last10 >=2 && last10 <=4 && (last100 < 10 || last100 >= 20)) return 'Продукта'
   return 'Продуктов'
 }
-// function formatDateShort(d) {
-//   try {
-//     const date = new Date(d)
-//     const day = date.toLocaleString('ru-RU', { day: '2-digit'})
-//     let month = date.toLocaleString('ru-RU', { month: 'short'})
-//     month = month.replace('.', '')
-//     month = month.charAt(0).toUpperCase() + month.slice(1)
-//     const year = date.getFullYear()
-//     return `${day} / ${month} / ${year}`
-//   } catch { 
-//     return d 
-//   }
-// }
 </script>
 
 <style scoped>
@@ -352,19 +338,4 @@ function productEndWord(count) {
   padding: 0 12px;
   transition: background-color 0.2s ease;
 }
-
-/* .btn-close-custom:hover {
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-  transform: scale(1.05);
-}
-
-.btn-close-custom i {
-  font-size: 18px;
-  color: #888;
-  transition: color 0.3s ease;
-}
-
-.btn-close-custom:hover i {
-  color: #000;
-} */
 </style>

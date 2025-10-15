@@ -1,4 +1,4 @@
-<script setup>
+<script setup lang="ts">
 import TopMenu from './components/TopMenu.vue';
 import NavigationMenu from './components/NavigationMenu.vue';
 </script>

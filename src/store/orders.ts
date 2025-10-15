@@ -1,10 +1,11 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useProductsStore } from "./products";
+import type { Order, Product } from "../types";
 
 export const useOrdersStore = defineStore('orders', () => {
     const productsStore = useProductsStore();
-    const orders = ref([
+    const orders = ref<Order[]>([
         {
             id: 1,
             title: 'Рандомное название прихода',
@@ -25,9 +26,9 @@ export const useOrdersStore = defineStore('orders', () => {
         }
     ]);
 
-    const ordersWithProducts = computed(() => {
+    const ordersWithProducts = computed<Order[]>(() => {
     return orders.value.map(order => {
-      const relatedProducts = productsStore.products.filter(
+      const relatedProducts: Product[] = productsStore.products.filter(
         p => p.order === order.id
       );
 
@@ -52,10 +53,10 @@ export const useOrdersStore = defineStore('orders', () => {
     });
   });
 
-  const totalOrders = computed(() => orders.value.length);
+  const totalOrders = computed<number>(() => orders.value.length);
 
-  const addOrder = (order) => orders.value.push(order);
-  const removeOrder = (id) => {
+  const addOrder = (order: Order) => orders.value.push(order);
+  const removeOrder = (id: number) => {
     orders.value = orders.value.filter(o => o.id !== id);
     productsStore.products = productsStore.products.filter(p => p.order !==id);
   };
