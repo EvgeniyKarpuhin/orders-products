@@ -10,21 +10,18 @@ export const useOrdersStore = defineStore('orders', () => {
             title: 'Рандомное название прихода',
             date: '2017-12-29 12:09:33',
             description: 'desc',
-            // get products () { return products }
         },
         {
             id: 2,
             title: 'Рандомное название прихода',
             date: '2017-06-29 12:09:33',
             description: 'desc',
-            // get products () { return products }
         },
         {
             id: 3,
             title: 'Рандомное название прихода',
             date: '2017-06-29 12:09:33',
             description: 'desc',
-            // get products () { return products },
         }
     ]);
 
@@ -65,12 +62,4 @@ export const useOrdersStore = defineStore('orders', () => {
 
   return { orders, ordersWithProducts, totalOrders, addOrder, removeOrder };
 
-    // const totalOrders = computed(() => orders.value.length)
-
-    // const addOrder = (order) => orders.value.push(order)
-    // const removeOrder = (id) => {
-    //     orders.value = orders.value.filter(o => o.id !== id)
-    // }
-
-    // return { orders, totalOrders, addOrder, removeOrder }
 })

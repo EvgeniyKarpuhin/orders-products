@@ -18,7 +18,6 @@
 .nav-link {
     position: relative;
   text-decoration: none;
-  /* color: #333; */
   transition: color 0.3s;
 }
 

@@ -9,15 +9,15 @@ import NavigationMenu from './components/NavigationMenu.vue';
     <div class="content-wrapper">
       <NavigationMenu />
       <router-view v-slot="{ Component }">
-  <transition
+  <!-- <transition
     name="fade"
     mode="out-in"
     appear
     enter-active-class="animate__animated animate__fadeIn"
     leave-active-class="animate__animated animate__fadeOut"
-  >
+  > -->
     <component :is="Component" />
-  </transition>
+  <!-- </transition> -->
 </router-view>
     </div>
   </div>
@@ -38,7 +38,6 @@ import NavigationMenu from './components/NavigationMenu.vue';
 .content-wrapper {
   display: flex;
   flex: 1;
-  /* overflow: hidden; */
 }
 
 /* Навигация слева */

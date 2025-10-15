@@ -3,7 +3,7 @@
     <div class="d-flex align-items-center py-5">
       <button class="btn me-3 rounded-5 border border-4 border-success d-flex justify-content-center align-items-center text-white" style="background: #0fb304; width: 35px; height: 35px;" @click="addNewOrder">+</button>
       <h3 class="me-2">Приходы</h3>
-      <h3><spam class="me-2">/</spam>{{ totalOrders }}</h3>
+      <h3><span class="me-2">/</span>{{ totalOrders }}</h3>
     </div>
     <div class="position-relative" style="height: 80vh;">
       <!-- Левый столбец -->
@@ -26,7 +26,7 @@
           <div class="flex-grow-1 d-flex justify-content-between align-items-center m-3">
             <transition name="fade" mode="out-in">
               <div v-show="!selectedOrder">
-                <u class="fw-bold">{{ order.title }}</u>
+                <u>{{ order.title }}</u>
               </div>
               
             </transition>
@@ -49,8 +49,7 @@
             <div v-if="!selectedOrder" class="text-nowrap text-secondary d-grid text-start">
               <small class="fs-small">{{ order.totalUSD }} $</small>
               <span>{{ order.totalUAH }} UAH</span>
-                 
-              </div>
+            </div>
 
             <button v-if="!selectedOrder" class="btn btn-sm ms-2" @click.stop="confirmDelete(order)">
               <i class="bi bi-trash"></i>
@@ -71,7 +70,7 @@
               :key="selectedOrder.id"
               class="order-details position-absolute top-0 end-0 h-100 bg-white px-3">
           <div v-if="selectedOrder" key="details" class="card mh-80" style="max-height: 80vh;">
-            <div>
+            <div class="overflow-x-hidden">
               <div class="p-2">
                 <div class="d-flex justify-content-between align-items-start m-3">
                 <div>
@@ -81,7 +80,7 @@
               </div>
 
               <div class="mb-3 text-start">
-                <button class="btn btn-sm m-l-3 d-flex text-success" @click="addProductToOrder"><span class="rounded-5 bg-success me-2" style="color: white; width: 20px;">+</span> Добавить продукт</button>
+                <button class="btn btn-sm m-l-3 d-flex text-success" @click="addProductToOrderNext()"><span class="rounded-5 bg-success me-2" style="color: white; width: 20px;">+</span> Добавить продукт</button>
               </div>
               </div>
               
@@ -154,6 +153,7 @@ import { ref, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useOrdersStore } from '../store/orders'
 import { useProductsStore } from '../store/products'
+import { formatDateShort } from '../utils/date'
 
 const ordersStore = useOrdersStore()
 const productsStore = useProductsStore()
@@ -163,6 +163,7 @@ const selectedOrderId = ref(null)
 const showDeleteModal = ref(false)
 const deletedOrder = ref(null)
 const previewProduct = ref(null)
+const currentProductIndex = ref(0)
 
 const selectedOrder = computed(() => 
 ordersWithProducts.value.find(o => o.id === selectedOrderId.value))
@@ -195,38 +196,52 @@ function closeDeleteModal() {
 }
 function deleteOrder() {
   if (!deletedOrder.value) return
+
+  const wasSelected = selectedOrder.value?.id === deletedOrder.value.id
+
+  if (wasSelected) {
+    const remainingOrders = ordersStore.orders.filter(o => o.id !== deletedOrder.value.id)
+    selectedOrder.value = remainingOrders.length > 0 ? remainingOrders[0] : null
+  }
+
   ordersStore.removeOrder(deletedOrder.value.id)
   closeDeleteModal()
+
   if (selectedOrder.value && selectedOrder.value.id === deletedOrder.value.id) {
     selectedOrder.value = null
   }
 }
-function addProductToOrder() {
+
+function addProductToOrder(productId) {
   if(!selectedOrder.value) return;
+
+  const product = productsStore.products.find(p => p.id === productId)
+  if(!product) return;
+
   const newProduct = {
+    ...product,
     id: Date.now(),
-    title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
-    photo: '/images/samsung.png',
-    serialNumber: 1234,
-    specification: 'Specification 1',
-    status: 'Свободен',
-    price: [
-      {value: Math.floor(Math.random() * 100), symbol: 'USD', isDefault: true},
-      {value: Math.floor(Math.random() * 3000), symbol: 'UAH', isDefault: false},
-    ],
     order: selectedOrder.value.id,
     date: new Date().toISOString()
   }
   productsStore.addProduct(newProduct)
 }
+
+function addProductToOrderNext() {
+  const newProduct = productsStore.products[currentProductIndex.value]
+  if(newProduct) {
+    addProductToOrder(newProduct.id)
+    currentProductIndex.value = (currentProductIndex.value + 1) % productsStore.products.length
+  }
+}
+
 function removeProductFromOrder(productId) {
   productsStore.removeProduct(productId)
+  if(currentProductIndex.value >= productsStore.products.length) {
+    currentProductIndex.value = 0
+  }
 }
-function getDefaultPrice(p) {
-  if (!p?.price) return { value: 0, symbol: '' }
-  const def = p.price.find(pr => pr.isDefault) || p.price[0]
-  return def || { value: 0, symbol: '' }
-}
+
 function productEndWord(count) {
   const last10 = count % 10
   const last100 = count % 100
@@ -235,24 +250,19 @@ function productEndWord(count) {
   if(last10 >=2 && last10 <=4 && (last100 < 10 || last100 >= 20)) return 'Продукта'
   return 'Продуктов'
 }
-function formatDateShort(d) {
-  try {
-    const date = new Date(d)
-    const day = date.toLocaleString('ru-RU', { day: '2-digit'})
-    let month = date.toLocaleString('ru-RU', { month: 'short'})
-    month = month.replace('.', '')
-    month = month.charAt(0).toUpperCase() + month.slice(1)
-    const year = date.getFullYear()
-    return `${day} / ${month} / ${year}`
-  } catch { 
-    return d 
-  }
-}
-function formatDateLong(d) {
-  try {
-    return new Date(d).toLocaleString()
-  } catch { return d }
-}
+// function formatDateShort(d) {
+//   try {
+//     const date = new Date(d)
+//     const day = date.toLocaleString('ru-RU', { day: '2-digit'})
+//     let month = date.toLocaleString('ru-RU', { month: 'short'})
+//     month = month.replace('.', '')
+//     month = month.charAt(0).toUpperCase() + month.slice(1)
+//     const year = date.getFullYear()
+//     return `${day} / ${month} / ${year}`
+//   } catch { 
+//     return d 
+//   }
+// }
 </script>
 
 <style scoped>
@@ -262,10 +272,9 @@ function formatDateLong(d) {
 .orders-list .list-group-item { cursor: pointer; display: flex; gap: 12px; align-items: center; }
 .order-title { font-weight: 600; }
 .order-details {
-  width: 66.666%; /* ширина как col-md-8 */
+  width: 66.666%;
   z-index: 10;
   transition: transform 0.7s ease, opacity 0.4s ease;
-  /* width: 66.666%; */
 }
 .order-details .placeholder-block { background:#f8f9fb; border-radius:8px; padding:40px; }
 
@@ -306,7 +315,7 @@ function formatDateLong(d) {
 
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.9s ease;
+  transition: opacity 0.1s ease;
   display: none;
 }
 .fade-enter-from,
@@ -341,7 +350,7 @@ function formatDateLong(d) {
 .arrow-wrapper {
   background-color: #f0f0f0;
   padding: 0 12px;
-  transition: background-color 0.9s ease;
+  transition: background-color 0.2s ease;
 }
 
 /* .btn-close-custom:hover {

@@ -1,175 +1,140 @@
-<template>
-  <div class="orders-wrapper position-relative overflow-hidden" style="width: 100%;">
-    <!-- Левая колонка -->
-    <aside
-      class="orders-list p-3 transition-width bg-white"
-      :class="{ 'col-md-4': selectedOrder, 'col-12': !selectedOrder }"
-    >
-      <div v-if="orders.length === 0" class="text-muted">Приходов нет</div>
-
-      <div class="list-group">
-        <button
-          v-for="order in orders"
-          :key="order.id"
-          class="list-group-item list-group-item-action d-flex justify-content-between align-items-center mb-3 border rounded"
-          :class="{ active: selectedOrder && selectedOrder.id === order.id }"
-          @click="selectOrder(order)"
-        >
-        <transition name="fade" mode="out-in">
-          <u v-show="!selectedOrder" class="fw-bold">{{ order.title }}</u>
-        </transition>
-          
-
-          <div>
-            <p>ghfghgffgjhhfjhf</p>
-          </div>
-
-          <div v-show="!selectedOrder">
-            <p>ghfghgffgjhhfjhf</p>
-          </div>
-
-          <div class="text-start d-flex align-items-center">
-            <i
-              class="bi bi-list-ul me-3 text-secondary"
-              style="font-size: x-large; border: 1px solid; border-radius: 50%; width: 40px; height: 40px; display: flex; justify-content: center; align-items: center;"
-            ></i>
-            <div>
-              <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
-              <small class="text-muted">{{ productEndWord(order.products?.length) }}</small>
-            </div>
-          </div>
-        </button>
-      </div>
-    </aside>
-
-    <!-- Правая панель (поверх, а не в потоке) -->
-    <transition name="slide-right">
-      <main
-        v-if="selectedOrder"
-        class="order-details position-absolute top-0 end-0 h-100 bg-white shadow-lg p-3"
-      >
-        <div class="d-flex justify-content-between align-items-start m-3">
-          <div>
-            <h4 class="card-title">{{ selectedOrder.title }}</h4>
-          </div>
-          <button class="btn btn-light btn-sm" @click="closeDetails">✕</button>
-        </div>
-
-        <ul class="list-group rounded-0">
-          <li
-            v-for="p in selectedOrder.products"
-            :key="p.id"
-            class="list-group-item d-flex align-items-center"
-          >
-            <img
-              v-if="p.photo"
-              :src="p.photo"
-              alt="Фото"
-              style="width:48px;height:48px;object-fit:cover;margin-right:12px;border-radius:4px"
-            />
-            <div class="flex-grow-1 text-start">
-              <div class="fw-semibold">{{ p.title }}</div>
-              <span class="text-muted small">SN: {{ p.serialNumber || '-' }}</span>
-            </div>
-          </li>
-        </ul>
-    </main>
-    </transition>
-  </div>
-</template>
-
 <script setup>
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
+import { useProductsStore } from '../store/products' 
+import { useOrdersStore } from '../store/orders' 
+import { formatDateShort } from '../utils/date'
 
-const orders = ref([
-  {
-    id: 1,
-    title: 'Очень длинное название прихода',
-    products: [
-      { id: 1, title: 'Монитор', serialNumber: 'SN123', photo: '/images/samsung.png' },
-      { id: 2, title: 'Клавиатура', serialNumber: 'SN456', photo: '/images/samsung.png' },
-    ],
-  },
-  {
-    id: 2,
-    title: 'Ещё одно длинющее название прихода',
-    products: [
-      { id: 3, title: 'Мышка', serialNumber: 'SN789', photo: '/images/samsung.png' },
-    ],
-  },
-])
+const { products } = useProductsStore()
+const { orders } = useOrdersStore()
 
-const selectedOrder = ref(null)
+const totalProducts = computed(() => products.length)
 
-function selectOrder(order) {
-  selectedOrder.value = order
+const selectedType = ref('Все')
+const selectedSpecification = ref('Все')
+
+const productTypes = computed(() => {
+  const types = products.map(p => p.type)
+  return ['Все', ...new Set(types)]
+})
+
+const productSpecification = computed(() => {
+  const spec = products.map(p => p.specification)
+  return ['Все', ...new Set(spec)]
+})
+
+const filteredProducts = computed(() => {
+  let result = products
+  if (selectedType.value !== 'Все') {
+    result = result.filter(p => p.type === selectedType.value)
+  }
+  if (selectedSpecification.value !== 'Все') {
+    result = result.filter(p => p.specification === selectedSpecification.value)
+  }
+  return result
+})
+
+function formatDate(dateStr, format = 'short') {
+  const date = new Date(dateStr)
+  if (format === 'short') {
+    return date.toLocaleDateString('ru-RU')
+  } else {
+    return date.toLocaleString('ru-RU', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: '2-digit'
+    })
+  }
 }
 
-function closeDetails() {
-  // setTimeout(() => {
-    selectedOrder.value = null
-  // }, 400)
-  
-}
-
-function productEndWord(count) {
-  if (count === 1) return 'Продукт'
-  if (count >= 2 && count <= 4) return 'Продукта'
-  return 'Продуктов'
+function getOrderTitle(orderId) {
+  const order = orders.find(o => o.id === orderId)
+  return order?.title || 'Без названия'
 }
 </script>
 
+<template>
+  <div class="w-100 ps-5 pt-4">
+    <header class="d-flex align-items-center py-4">
+      <div class="d-flex me-5">
+        <h3 class="me-2">Продукты</h3>
+        <h3><span class="me-2">/</span>{{ totalProducts }}</h3>
+      </div>
+      
+      <div class="d-flex align-items-baseline me-5">
+        <p class="me-2">Тип:</p>
+        <select v-model="selectedType" class="form-select w-auto">
+          <option v-for="type in productTypes" :key="type" :value="type">{{ type }}</option>
+        </select>
+      </div>
+
+      <div class="d-flex align-items-baseline">
+        <p class="me-2">Спецификация:</p>
+        <select v-model="selectedSpecification" class="form-select">
+          <option v-for="specification in productSpecification" :key="specification" :value="specification">{{ specification }}</option>
+        </select>
+      </div>
+      
+    </header>
+
+    <div class="list-group w-100">
+      <div
+        v-for="product in filteredProducts"
+        :key="product.id"
+        class="list-group-item d-flex align-items-center mb-3 border rounded gap-2 justify-content-between"
+      >
+        <!-- Левая часть -->
+          <i class="bi bi-circle-fill text-warning" style="font-size: 10px; margin-right: 10px;"
+            :class="{
+              'text-warning': product.status === 'Свободен',
+              'text-muted fw-bold': product.status === 'В ремонте'
+            }"></i>
+          <img :src="product.photo" alt="product" class="me-3" style="width: 60px; height: 60px; object-fit: contain;" />
+          <div class="text-start">
+            <div style="max-width: 300px;">{{ product.title }}</div>
+          <span class="text-muted small">SN: {{ product.serialNumber || '-' }}</span>
+          </div>
+          
+          <div class="text-start me-4">
+            <span :class="{
+              'text-warning': product.status === 'Свободен',
+              'text-muted fw-bold': product.status === 'В ремонте'}">{{ product.status }}</span>
+          </div>
+
+          <div class="d-grid">
+            <span>c {{ formatDate(product.guarantee.start) }}</span> 
+            <span>по {{ formatDate(product.guarantee.end) }}</span>
+          </div>
+
+          <div class="text-end me-3">
+            <span>{{ product.specification }}</span>
+          </div>
+
+          <div>
+            <div class="text-nowrap text-secondary d-grid text-start">
+              <small class="fs-small">{{ orders?.totalUSD || 0 }} $</small>
+              <span>{{ orders?.totalUAH || 0 }} UAH</span>
+            </div>
+          </div>
+          <span>{{ getOrderTitle(product.order) }}</span>
+
+          <div>
+            <small class="text-muted">{{ formatDateShort(product.date) }}</small>
+          </div>
+
+          <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">
+            <i class="bi bi-trash"></i>
+          </button>
+      </div>
+    </div>
+  </div>
+</template>
+
 <style scoped>
-.orders-wrapper {
-  position: relative;
-  display: flex;
-  transition: all 0.4s ease;
-  min-height: 100vh;
-}
-
-.transition-width {
-  transition: width 0.4s ease;
-}
-
-.order-details {
-  width: 66.666%; /* ширина как col-md-8 */
-  z-index: 10;
-}
-
-/* Анимация выезда справа */
-.slide-right-enter-active,
-.slide-right-leave-active {
-  transition: all 0.7s ease;
-}
-
-.slide-right-enter-from {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.slide-right-enter-to {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.slide-right-leave-from {
-  transform: translateX(0);
-  opacity: 1;
-}
-
-.slide-right-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
-}
-
-.fade-enter-active, 
-.fade-leave-active {
-  transition: opacity 0.3s ease;
-  display: none;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-}
+/* .products-wrapper {
+  padding: 1rem;
+} */
 </style>
+
 
 

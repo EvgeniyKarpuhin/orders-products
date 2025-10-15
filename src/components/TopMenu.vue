@@ -1,6 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue';
+import { io } from 'socket.io-client'
 
+const socket = io('http://localhost:3000', { transports: ['websocket'] })
+
+const activeSessions = ref(0)
 const currentDate = ref('')
 const currentTime = ref('')
 
@@ -28,9 +32,17 @@ let interval
 onMounted(() => {
     updateTime()
     interval = setInterval(updateTime, 1000)
+
+    socket.on('activeSessions', count => {
+      activeSessions.value = count
+    })
+    socket.emit('join')
 })
 
-onUnmounted(() => clearInterval(interval))
+onUnmounted(() => {
+  clearInterval(interval)
+  socket.disconnect()
+})
 
 </script>
 
@@ -51,10 +63,10 @@ onUnmounted(() => clearInterval(interval))
 
 <style scoped>
 .top-menu {
-  /* background-color: #343a40; */
   color: #fff;
   padding: 0.8rem 1.5rem;
   box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.5);
+  z-index: 1;
 }
 
 .top-menu__content {

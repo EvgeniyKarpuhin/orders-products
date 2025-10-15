@@ -10,14 +10,15 @@ export const useProductsStore = defineStore('products', () => {
             photo: '/images/samsung.png',
             title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
             type: 'Monitors',
-            specification: 'Specification 1',
+            specification: 'Новый',
+            status: 'Свободен',
             guarantee: {
             start: '2017-06-29 12:09:33',
-            end: '2017-06-29 12:09:33'
+            end: '2017-07-30 12:09:33'
             },
             price: [
-            {value: 100, symbol: 'USD', isDefault: 0},
-            {value: 4100, symbol: 'UAH', isDefault: 1}
+            {value: 100, symbol: 'USD', isDefault: true},
+            {value: 4100, symbol: 'UAH', isDefault: false}
             ],
             order: 1,
             date: '2017-06-29 12:09:33'
@@ -29,14 +30,15 @@ export const useProductsStore = defineStore('products', () => {
             photo: '/images/samsung.png',
             title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
             type: 'Monitors',
-            specification: 'Specification 1',
+            specification: 'Б/У',
+            status: 'В ремонте',
             guarantee: {
             start: '2017-12-29 12:09:33',
-            end: '2017-12-29 12:09:33'
+            end: '2018-01-18 12:09:33'
             },
             price: [
-            {value: 100, symbol: 'USD', isDefault: 0},
-            {value: 4100, symbol: 'UAH', isDefault: 1}
+            {value: 100, symbol: 'USD', isDefault: true},
+            {value: 4100, symbol: 'UAH', isDefault: false}
             ],
             order: 2,
             date: '2017-06-29 12:09:33'
