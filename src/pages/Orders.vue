@@ -8,7 +8,6 @@ import type { Order, Product } from '../types'
 
 const ordersStore = useOrdersStore()
 const productsStore = useProductsStore()
-// const { products } = storeToRefs(productsStore)
 const { ordersWithProducts, totalOrders } = storeToRefs(ordersStore)
 
 const selectedOrderId = ref<number | null>(null)
@@ -20,7 +19,6 @@ const currentProductIndex = ref<number>(0)
 const selectedOrder = computed<Order | undefined>(() =>
   ordersWithProducts.value.find(o => o.id === selectedOrderId.value))
 
-
 function addNewOrder(): void {
   const newOrder: Order = {
     id: Date.now(),
@@ -30,7 +28,6 @@ function addNewOrder(): void {
   }
   ordersStore.addOrder(newOrder)
 }
-
 function selectOrder(order: Order): void {
   selectedOrderId.value = order.id
 }
@@ -54,7 +51,6 @@ function deleteOrder(): void {
     const remainingOrders = ordersStore.orders.filter((o: Order) => o.id !== deletedOrder.value!.id)
     selectedOrderId.value = remainingOrders.length > 0 ? remainingOrders[0].id : null
   }
-
   ordersStore.removeOrder(deletedOrder.value!.id)
   closeDeleteModal()
 
@@ -62,7 +58,6 @@ function deleteOrder(): void {
     selectedOrderId.value = null
   }
 }
-
 function addProductToOrder(): void {
   if (!selectedOrder.value) return;
 
@@ -70,15 +65,10 @@ function addProductToOrder(): void {
     { status: 'Свободен'},
     { status: 'В ремонте'}
   ];
-
   const template = productStatus[currentProductIndex.value]
   if(!template) {
     currentProductIndex.value = 0;
   }
-
-  // const product = productsStore.products.find(p => p.id === productId)
-  // if (!product) return;
-
   const newProduct: Product = {
     id: Date.now(),
     serialNumber: 1234,
@@ -98,30 +88,16 @@ function addProductToOrder(): void {
     ],
     order: selectedOrder.value.id,
     date: new Date().toISOString()
-    // ...product,
-    // id: Date.now(),
-    // order: selectedOrder.value.id,
-    // date: new Date().toISOString()
   }
   productsStore.addProduct(newProduct)
   currentProductIndex.value = (currentProductIndex.value + 1) % productStatus.length
 }
-
-// function addProductToOrderNext(): void {
-//   const newProduct = productsStore.products[currentProductIndex.value]
-//   if (newProduct) {
-//     addProductToOrder(newProduct.id)
-//     currentProductIndex.value = (currentProductIndex.value + 1) % productsStore.products.length
-//   }
-// }
-
 function removeProductFromOrder(productId: number): void {
   productsStore.removeProduct(productId)
   if (currentProductIndex.value >= productsStore.products.length) {
     currentProductIndex.value = 0
   }
 }
-
 function productEndWord(count: number): string {
   const last10 = count % 10
   const last100 = count % 100

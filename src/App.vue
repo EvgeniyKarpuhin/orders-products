@@ -9,22 +9,10 @@ import NavigationMenu from './components/NavigationMenu.vue';
     <div class="content-wrapper">
       <NavigationMenu />
       <router-view v-slot="{ Component }">
-  <!-- <transition
-    name="fade"
-    mode="out-in"
-    appear
-    enter-active-class="animate__animated animate__fadeIn"
-    leave-active-class="animate__animated animate__fadeOut"
-  > -->
-    <component :is="Component" />
-  <!-- </transition> -->
-</router-view>
+        <component :is="Component" />
+      </router-view>
     </div>
   </div>
-  
-  
-  
-  
 </template>
 
 <style scoped>
