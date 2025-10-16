@@ -5,6 +5,7 @@ import { useOrdersStore } from '../store/orders'
 import { useProductsStore } from '../store/products'
 import { formatDateShort } from '../utils/date'
 import type { Order, Product } from '../types'
+import OrdersChart from '../components/OrdersChart.vue'
 
 const ordersStore = useOrdersStore()
 const productsStore = useProductsStore()
@@ -138,7 +139,7 @@ function productEndWord(count: number): string {
       <h3 class="me-2">Приходы</h3>
       <h3><span class="me-2">/</span>{{ totalOrders }}</h3>
     </div>
-    <div class="position-relative">
+    <div class="d-flex">
       <!-- Левый столбец -->
       <aside class="list-group transition-width" style="max-height: 80vh;" :class="{ 'col-md-4': selectedOrder, 'col-12': !selectedOrder }">
         <div v-if="ordersWithProducts.length === 0" class="text-muted">
@@ -185,7 +186,7 @@ function productEndWord(count: number): string {
       <!-- Правая панель с анимацией -->
       <transition name="slide-right">
         <main v-if="selectedOrder" :key="selectedOrder.id"
-          class="order-details position-absolute top-0 end-0 h-100 bg-white px-3">
+          class="order-details top-0 end-0 bg-white px-3">
           <div v-if="selectedOrder" key="details" class="card mh-80" style="max-height: 80vh;">
             <div class="overflow-x-hidden">
               <div class="p-2">
@@ -230,6 +231,7 @@ function productEndWord(count: number): string {
         </main>
       </transition>
     </div>
+    <OrdersChart style="max-width: 100%;"/>
     <!-- Модалка с анимацией -->
     <transition enter-active-class="animate__animated animate__zoomIn animate__faster"
       leave-active-class="animate__animated animate__zoomOut animate__faster">

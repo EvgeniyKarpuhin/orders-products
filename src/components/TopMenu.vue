@@ -56,7 +56,6 @@ onUnmounted(() => {
         <span class="top-menu__time">{{ currentTime }}</span>
         <span class="top-menu__sessions">{{ activeSessions }} активных сессий</span>
       </div>
-      
     </div>
   </header>
 </template>

@@ -1,4 +1,5 @@
 import { createApp } from 'vue'
+import { i18n } from './locales'
 import { createPinia } from 'pinia'
 import './style.css'
 import App from './App.vue'
@@ -12,4 +13,5 @@ const pinia = createPinia()
 
 app.use(pinia)
 app.use(router)
+app.use(i18n)
 app.mount('#app')
