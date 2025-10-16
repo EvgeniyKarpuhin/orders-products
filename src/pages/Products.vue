@@ -130,7 +130,6 @@ function getPrice(product: Product, currency: 'USD' | 'UAH'): number {
     </div>
     <Maps />
   </div>
-  <!-- <Maps /> -->
 </template>
 
 
