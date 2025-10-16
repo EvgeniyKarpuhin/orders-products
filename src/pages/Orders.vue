@@ -223,15 +223,10 @@ function productEndWord(count: number): string {
               </ul>
             </div>
           </div>
-          <!-- Если ничего не выбрано -->
-          <div v-else key="placeholder"
-            class="placeholder-block p-5 text-center text-muted animate__animated animate__fadeIn">
-            Выберите заказ слева, чтобы увидеть детали
-          </div>
         </main>
       </transition>
     </div>
-    <OrdersChart style="max-width: 100%;"/>
+    <OrdersChart v-if="ordersWithProducts.length > 0 && !selectedOrder" style="max-width: 100%;"/>
     <!-- Модалка с анимацией -->
     <transition enter-active-class="animate__animated animate__zoomIn animate__faster"
       leave-active-class="animate__animated animate__zoomOut animate__faster">

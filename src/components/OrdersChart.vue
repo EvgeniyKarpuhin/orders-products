@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>{{ $t('orders') }} Chart</h3>
+    <h3>График приходов</h3>
     <Bar :data="chartData" :options="chartOptions" />
   </div>
 </template>
