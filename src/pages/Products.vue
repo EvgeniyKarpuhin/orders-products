@@ -4,6 +4,7 @@ import { useProductsStore } from '../store/products'
 import { useOrdersStore } from '../store/orders' 
 import { formatDateShort } from '../utils/date'
 import type { Order, Product } from '../types'
+import Maps from '../components/Maps.vue'
 
 const { products } = useProductsStore()
 const { orders } = useOrdersStore()
@@ -127,7 +128,9 @@ function getPrice(product: Product, currency: 'USD' | 'UAH'): number {
           </div>
       </div>
     </div>
+    <Maps />
   </div>
+  <!-- <Maps /> -->
 </template>
 
 

@@ -3,5 +3,8 @@ import vue from '@vitejs/plugin-vue'
 
 // https://vite.dev/config/
 export default defineConfig({
+  optimizeDeps: {
+    include: ['leaflet']
+  },
   plugins: [vue()],
 })

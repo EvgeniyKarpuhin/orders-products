@@ -8,7 +8,6 @@
 <style scoped>
 canvas {
   max-width: 100%;
-  
 }
 </style>
 
