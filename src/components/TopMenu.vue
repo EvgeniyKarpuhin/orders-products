@@ -2,7 +2,7 @@
 import { ref, onMounted, onUnmounted } from 'vue';
 import { io, Socket } from 'socket.io-client'
 
-const socket: Socket = io('http://localhost:3000', { transports: ['websocket'] })
+const socket: Socket = io('http://localhost:4000', { transports: ['websocket'] })
 
 const activeSessions = ref<number>(0)
 const currentDate = ref<string>('')
