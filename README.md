@@ -24,6 +24,8 @@
 - **Chart.js / vue-chart-3**
 - **Leaflet / vue-leaflet**
 - **Vite**
+- **CSS Architecture (БЭМ)**
+- **Bootstrap**
 - **LocalStorage**
 - **Docker**
 
@@ -38,6 +40,13 @@ cd orders-product
 npm install
 
 npm run dev
+
+### Чтобы запустить проект в Docker-контейнере
+
+docker build -t orders-product .
+
+docker run -p 4173:4173 orders-product
+
 
 ## 👨‍💻 Автор
 
