@@ -41,11 +41,17 @@ npm install
 
 npm run dev
 
-### Чтобы запустить проект в Docker-контейнере
+🐳 Запуск проекта в Docker
 
-docker build -t orders-product .
+Собрать и запустить фронтенд
 
-docker run -p 4173:4173 orders-product
+docker build -t orders-frontend -f Dockerfile.frontend .
+docker run -d -p 3000:3000 --name orders-frontend orders-frontend
+
+Собрать и запустить бэкенд (Socket.io / API)
+
+docker build -t orders-backend -f Dockerfile.backend .
+docker run -d -p 4000:4000 --name orders-backend orders-backend
 
 
 ## 👨‍💻 Автор
