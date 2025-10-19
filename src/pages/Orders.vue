@@ -6,6 +6,8 @@ import { useProductsStore } from '../store/products'
 import { formatDateShort } from '../utils/date'
 import type { Order, Product } from '../types'
 import OrdersChart from '../components/OrdersChart.vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const ordersStore = useOrdersStore()
 const productsStore = useProductsStore()
@@ -80,8 +82,8 @@ function addProductToOrder(): void {
   if (!selectedOrder.value) return;
 
   const productStatus = [
-    { status: 'Свободен'},
-    { status: 'В ремонте'}
+    { status: 'avail'},
+    { status: 'repair'}
   ];
   if(currentProductIndex.value >= productStatus.length) {
     currentProductIndex.value = 0;
@@ -90,13 +92,13 @@ function addProductToOrder(): void {
   if(!template) {
     currentProductIndex.value = 0;
   }
-  const isUsed = template.status === 'В ремонте';
+  const isUsed = template.status === 'repair';
   const newProduct: Product = {
     id: Date.now(),
     serialNumber: 1234,
     isNew: isUsed ? 0 : 1,
     photo: '/images/samsung.png',
-    title: 'Монитор 27" Samsung S27DG600SI (LS27DG600SIXCI)',
+    title: '27" Samsung S27DG600SI (LS27DG600SIXCI)',
     type: 'Monitors',
     specification: isUsed ? 'Б/У' : 'Новый',
     status: template.status,
@@ -124,9 +126,10 @@ function productEndWord(count: number): string {
   const last10 = count % 10
   const last100 = count % 100
 
-  if (last10 === 1 && last100 !== 11) return 'Продукт'
-  if (last10 >= 2 && last10 <= 4 && (last100 < 10 || last100 >= 20)) return 'Продукта'
-  return 'Продуктов'
+  if (count === 0) return t('productWord.none')
+  if (last10 === 1 && last100 !== 11) return t('productWord.one')
+  if (last10 >= 2 && last10 <= 4 && (last100 < 10 || last100 >= 20)) return t('productWord.few')
+  return t('productWord.many')
 }
 </script>
 
@@ -136,14 +139,14 @@ function productEndWord(count: number): string {
       <button
         class="btn me-3 rounded-5 border border-4 border-success d-flex justify-content-center align-items-center text-white"
         style="background: #0fb304; width: 35px; height: 35px;" @click="addNewOrder">+</button>
-      <h3 class="me-2">Приходы</h3>
+      <h3 class="me-2">{{ $t('orders') }}</h3>
       <h3><span class="me-2">/</span>{{ totalOrders }}</h3>
     </div>
     <div class="d-flex">
       <!-- Левый столбец -->
       <aside class="list-group transition-width" style="max-height: 80vh;" :class="{ 'col-md-4': selectedOrder, 'col-12': !selectedOrder }">
         <div v-if="ordersWithProducts.length === 0" class="text-muted">
-          Приходов нет
+          {{ $t('noOrders') }}
         </div>
         <div class="list-group overflow-auto">
           <div role="button" v-for="order in ordersWithProducts" :key="order.id"
@@ -152,7 +155,7 @@ function productEndWord(count: number): string {
             <div class="flex-grow-1 d-flex justify-content-between align-items-center m-3">
               <transition name="fade" mode="out-in">
                 <div v-show="!selectedOrder">
-                  <u>{{ order.title }}</u>
+                  <u>{{ $t('orderName') }}</u>
                 </div>
               </transition>
               <div class="text-start d-flex align-items-center">
@@ -162,7 +165,7 @@ function productEndWord(count: number): string {
                 </div>
                 <div>
                   <div class="fw-bold fs-5">{{ order.products?.length || 0 }}</div>
-                  <small class="text-muted">{{ order.products?.length ? productEndWord(order.products?.length) : 'Нет продуктов' }}</small>
+                  <small class="text-muted">{{ productEndWord(order.products?.length || 0) }}</small>
                 </div>
               </div>
               <div>
@@ -192,14 +195,14 @@ function productEndWord(count: number): string {
               <div class="p-2">
                 <div class="d-flex justify-content-between align-items-start m-3">
                   <div>
-                    <h4 class="card-title">{{ selectedOrder.title }}</h4>
+                    <h4 class="card-title">{{ $t('orderName') }}</h4>
                   </div>
                   <button class="btn btn-light btn-sm btn-close-custom" @click="closeDetails">✕</button>
                 </div>
 
                 <div class="mb-3 text-start">
                   <button class="btn btn-sm m-l-3 d-flex text-success" @click="addProductToOrder"><span
-                      class="rounded-5 bg-success me-2" style="color: white; width: 20px;">+</span> Добавить продукт
+                      class="rounded-5 bg-success me-2" style="color: white; width: 20px;">+</span> {{ $t('addProduct') }}
                   </button>
                 </div>
               </div>
@@ -214,7 +217,7 @@ function productEndWord(count: number): string {
                     <span class="text-muted small">SN: {{ p.serialNumber || '-' }}</span>
                   </div>
                   <div class="text-end me-3">
-                    <span class="text-warning">{{ p.status }}</span>
+                    <span class="text-warning">{{ $t(`status.${p.status}`) }}</span>
                   </div>
                   <button class="btn btn-sm" @click.stop="removeProductFromOrder(p.id)">
                     <i class="bi bi-trash"></i>
@@ -246,9 +249,9 @@ function productEndWord(count: number): string {
               </div>
             </div>
             <div class="d-flex justify-content-end gap-2 p-4" style="background: #0fb304;">
-              <button class="bg-transparent text-white" @click="closeDeleteModal">Отменить</button>
+              <button class="bg-transparent text-white" @click="closeDeleteModal">{{ $t('cancel') }}</button>
               <button class="btn text-danger bg-light px-4 rounded-5" @click="deleteOrder"><i
-                  class="bi bi-trash me-2"></i>Удалить</button>
+                  class="bi bi-trash me-2"></i>{{ $t('delete') }}</button>
             </div>
           </div>
         </div>
