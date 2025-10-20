@@ -13,8 +13,8 @@ function setLang(lang: string) {
         <button @click="setLang('ru')">ru</button>
         <button @click="setLang('en')">en</button>
       </div>
-      <router-link to="/orders" class="nav-link">{{ t('orders') }}</router-link>
-      <router-link to="/products" class="nav-link">{{ t('products') }}</router-link>
+      <router-link to="/orders" class="nav-link">{{ $t('orders') }}</router-link>
+      <router-link to="/products" class="nav-link">{{ $t('products') }}</router-link>
     </nav>
 </template>
 

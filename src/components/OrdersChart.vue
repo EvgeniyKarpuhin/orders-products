@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>График приходов</h3>
+    <h3>{{$t('chartTitile')}}</h3>
     <Bar :data="chartData" :options="chartOptions" />
   </div>
 </template>
@@ -24,6 +24,8 @@ import {
 import { useOrdersStore } from '../store/orders'
 import { useProductsStore } from '../store/products'
 import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale)
 
@@ -32,7 +34,7 @@ const productsStore = useProductsStore()
 
 // Собираем суммы по каждому приходу
 const chartData = computed(() => {
-  const labels = ordersStore.orders.map(order => order.title)
+  const labels = ordersStore.orders.map(order => t('orderName'))
   const data = ordersStore.orders.map(order => {
     const products = productsStore.products.filter(p => p.order === order.id)
     const total = products.reduce((sum, p) => {
@@ -58,7 +60,7 @@ const chartOptions = {
   responsive: true,
   plugins: {
     legend: { display: true },
-    title: { display: true, text: 'Orders Overview' }
+    title: { display: true }
   }
 }
 </script>
