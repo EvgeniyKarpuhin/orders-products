@@ -5,6 +5,7 @@ const messages = {
     orders: 'Orders',
     noOrders: 'No orders',
     orderName: 'Randon order name',
+    chartTitile: 'Chart of orders',
     products: 'Products',
     productWord: {
       none: "No products",
@@ -38,11 +39,13 @@ const messages = {
     addProduct: 'Add Product',
     cancel: 'Cancel',
     delete: 'Delete',
+    deleteQ: 'Are you sure you want to delete this order?',
   },
   ru: {
     orders: 'Приходы',
     noOrders: 'Приходов нет',
     orderName: 'Рандомное название прихода',
+    chartTitile: 'График приходов',
     products: 'Продукты',
     productWord: {
       none: "Нет продуктов",
@@ -76,6 +79,7 @@ const messages = {
     addProduct: 'Добавить продукт',
     cancel: 'Отменить',
     delete: 'Удалить',
+    deleteQ: 'Вы уверены, что хотите удалить этот приход?',
   }
 }
 

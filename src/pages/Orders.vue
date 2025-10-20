@@ -237,7 +237,7 @@ function productEndWord(count: number): string {
         <div class="delete-modal card shadow-lg border-0">
           <div>
             <div class="d-flex justify-content-between align-items-start p-4">
-              <h5>Вы уверены, что хотите удалить этот приход?</h5>
+              <h5>{{ $t('deleteQ') }}</h5>
               <button class="btn btn-light btn-sm" @click="closeDeleteModal">✕</button>
             </div>
             <div class="d-flex gap-3 p-4 border-top">
