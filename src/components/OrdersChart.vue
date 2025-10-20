@@ -35,12 +35,22 @@ const chartData = computed(() => {
   const labels = ordersStore.orders.map(order => order.title)
   const data = ordersStore.orders.map(order => {
     const products = productsStore.products.filter(p => p.order === order.id)
-    const total = products.reduce((sum, p) => {
+    const totalUSD = products.reduce((sum, p) => {
       const usd = p.price.find(pr => pr.symbol === 'USD')
       return sum + (usd?.value || 0)
     }, 0)
-    return total
+    const totalUAH = products.reduce((sum, p) => {
+      const usd = p.price.find(pr => pr.symbol === 'UAH')
+      return sum + (usd?.value || 0)
+    }, 0)
+    return {
+      usd: totalUSD,
+      uah: totalUAH
+  }
   })
+  
+  const usdData = data.map(entry => entry.usd)
+  const uahData = data.map(entry => entry.uah)
 
   return {
     labels,
@@ -48,7 +58,12 @@ const chartData = computed(() => {
       {
         label: 'USD Total',
         backgroundColor: '#4CAF50',
-        data
+        data: usdData
+      },
+      {
+        label: 'UAH Total',
+        backgroundColor: '#4CAF50',
+        data: uahData
       }
     ]
   }
