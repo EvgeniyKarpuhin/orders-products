@@ -119,8 +119,8 @@ function getPrice(product: Product, currency: 'USD' | 'UAH'): number {
           
           <div class="text-start me-4">
             <span :class="{
-              'text-warning': product.status === 'Свободен',
-              'text-muted fw-bold': product.status === 'В ремонте'}">{{ $t(`status.${product.status}`) }}</span>
+              'text-warning': product.status === 'avail',
+              'text-muted fw-bold': product.status === 'repair'}">{{ $t(`status.${product.status}`) }}</span>
           </div>
 
           <div class="d-grid">

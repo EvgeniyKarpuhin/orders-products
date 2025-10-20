@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 function setLang(lang: string) {
   locale.value = lang
   localStorage.setItem('lang', lang)
@@ -9,10 +9,10 @@ function setLang(lang: string) {
 
 <template>
     <nav class="navigation animate__animated animate__fadeInLeft">
-      <div class="navigation-lang">
-        <button @click="setLang('ru')">ru</button>
-        <button @click="setLang('en')">en</button>
-      </div>
+      <select v-model="locale" class="navigation-lang" @change="setLang(locale)">
+        <option value="ru">ru</option>
+        <option value="en">en</option>
+      </select>
       <router-link to="/orders" class="nav-link">{{ $t('orders') }}</router-link>
       <router-link to="/products" class="nav-link">{{ $t('products') }}</router-link>
     </nav>
