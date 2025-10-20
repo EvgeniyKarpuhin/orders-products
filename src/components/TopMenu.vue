@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
 import { io, Socket } from 'socket.io-client'
+import { useI18n } from 'vue-i18n';
+const { locale } = useI18n()
 
 const socket: Socket = io('http://localhost:4000', { transports: ['websocket'] })
 
@@ -16,13 +18,13 @@ function updateTime(): void {
       month: 'short',
       year: 'numeric'
     }
-    let formatDate = now.toLocaleString('ru-RU', options)
+    let formatDate = now.toLocaleString(locale.value, options)
     formatDate = formatDate
     .replace(/\s?г\./, '')
     .replace(/\./g, '')
     .trim()
     currentDate.value = formatDate
-    currentTime.value = now.toLocaleTimeString('ru-RU', {
+    currentTime.value = now.toLocaleTimeString(locale.value, {
       hour: '2-digit',
       minute: '2-digit'
     })
